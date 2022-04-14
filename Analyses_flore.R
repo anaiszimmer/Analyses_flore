@@ -10,20 +10,24 @@ library(gridExtra)
 library(ggpubr)
 library(ggplot2)
 
-###Importing data
-
-setwd("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp")
+###Importing data from GitHub
 
 #data species = export CBNA - last used is 22 Nov 2021
-data_sp <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/export_478_13042022_172215.csv")
+
+f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/export_478_13042022_172215.csv?token=GHSAT0AAAAAABTEILHDZ5X5MWZX62OQE4OMYSXPURQ"
+data_sp <- read_csv(f, col_names = TRUE)
 #View(data_sp)
 
 #data plot = Anais csv plot, with geomorphology on it (for later) + colonne cleaned
-Alps_plot <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/AlpsAndes_plots.csv")
- #filter Alps data + remove Orny
+
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/AlpsAndes_plots.csv?token=GHSAT0AAAAAABTEILHDPRLYJLQ4MXQIMNBSYSXPYWQ"
+Alps_plot <- read_csv(f, col_names = TRUE)
+#filter Alps data
+
  Alps_plot<-Alps_plot%>%filter(Region=="Alps")#%>%filter(Site!="Orny")
 #View(Alps_plot)
 
+ 
 ### Data Cleaning
  ##Data_sp
   #Rename column
@@ -158,7 +162,9 @@ count2
 ### Import dispersal mode from (1) PFT_CBNA to Trait data frame
 
 #Plant Functional Trait CBNA data base
-PFT_CBNA <- read_csv("PFT_CBNA.csv")
+
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/PFT_CBNA.csv?token=GHSAT0AAAAAABTEILHCYLBLKD7OAZ2CJOG6YSXP3QQ"
+PFT_CBNA <- read_csv(f, col_names = TRUE)
 #View(PFT_CBNA)
 
 PFT_CBNA %>%
@@ -181,8 +187,8 @@ data_traitA%>%filter(dispersal_mode=="NA")->data_traitA2
 
 ## Import dispersal mode from (2) missing_CSR_dispersal to data_sp
 
-CSR_dispersal_2<-read_csv("missing_CSR_dispersal.csv")
-
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/missing_CSR_dispersal.csv?token=GHSAT0AAAAAABTEILHDEM66PYDCI2SPLDAUYSXP5SQ"
+CSR_dispersal_2 <- read_csv(f, col_names = TRUE)
 
 CSR_dispersal_2 %>%
   dplyr::select(CD_REF, dissemination)%>% right_join(data_traitA2, by=c('CD_REF'='CD_ref'), na.rm=TRUE)->data_traitA2
@@ -211,15 +217,18 @@ TRAITS<-data_trait%>%select(cd_ref, dispersal_mode, nom_reconnu, famille)%>%uniq
 
 #1_jOINING WITH CSR_CBNA_extra - column SA_CSR
 
-SA_CSR<-read_csv("CSR_CBNA_extra.csv")
-view(SA_CSR)
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_CBNA_extra.csv?token=GHSAT0AAAAAABTEILHDWU2YPNUR36VGEDTOYSXP67Q"
+SA_CSR<- read_csv(f, col_names = TRUE)
+#view(SA_CSR)
 
 SA_CSR %>%
   dplyr::select(CD_REF7, SA_CSR)%>% right_join(TRAITS, by=c('CD_REF7'='cd_ref'), na.rm=TRUE)%>%unique->TRAITS
 view(TRAITS)
 
 #2_jOINING WITH CSR_lifeform_FI - Strategie_CSR
-CSR_lifeform<-read_csv("CSR_lifeform_FI.csv")
+
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_lifeform_FI.csv?token=GHSAT0AAAAAABTEILHC2XPDLF552YSDCU2YYSXQACQ"
+CSR_lifeform<- read_csv(f, col_names = TRUE)
 
 CSR_lifeform %>%
   dplyr::select(cdref7, Strategie_CSR)%>% right_join(TRAITS, by=c('cdref7'='CD_REF7'), na.rm=TRUE)%>%unique->TRAITS
@@ -236,10 +245,6 @@ CSR_lifeform %>%
 
 ## Other trait from CBNA file
 PFT_CBNA %>%
-  rename(Hauteur_moyenne_CBNA_VALS='_Hauteur_moyenne_CBNA_VALS')->PFT_CBNA
-
-
-PFT_CBNA %>%
   dplyr::select(CD_ref,
                 Hauteur_moyenne_CBNA_VALS,
                 Vittoz_SD_SeedMass,
@@ -252,6 +257,7 @@ PFT_CBNA %>%
                 Feuillage_caducite_persistance_CBNA)%>% right_join(TRAITS, nom_reconnu, by=c('CD_ref'='cdref7'), na.rm=TRUE)%>%unique->TRAITS
 
 view(TRAITS)
+#write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS.csv")
 
 
 #**********************************************************************************************************
@@ -335,9 +341,6 @@ missing_CSR_dispersal<-merge(missing_CSR, missing_dispersal_mode, all=TRUE)
 #missing_CSR_dispersal%>%unique->missing_CSR_dispersal
 view(missing_CSR_dispersal)
 #write.csv(missing_CSR_dispersal,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\missing_CSR_dispersal.csv")
-
-
-
 
 
 
