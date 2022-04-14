@@ -14,17 +14,17 @@ library(ggplot2)
 
 #data species = export CBNA - last used is 22 Nov 2021
 
-f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/export_478_13042022_172215.csv?token=GHSAT0AAAAAABTEILHDZ5X5MWZX62OQE4OMYSXPURQ"
+f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/export_478_13042022_172215.csv?token=GHSAT0AAAAAABTEILHCJ7NIWPO6M2DAMAYMYSXQDTQ"
 data_sp <- read_csv(f, col_names = TRUE)
 #View(data_sp)
 
 #data plot = Anais csv plot, with geomorphology on it (for later) + colonne cleaned
 
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/AlpsAndes_plots.csv?token=GHSAT0AAAAAABTEILHDPRLYJLQ4MXQIMNBSYSXPYWQ"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/AlpsAndes_plots.csv?token=GHSAT0AAAAAABTEILHCZPXIHSJK3WFICLI6YSXQEZQ"
 Alps_plot <- read_csv(f, col_names = TRUE)
 #filter Alps data
 
- Alps_plot<-Alps_plot%>%filter(Region=="Alps")#%>%filter(Site!="Orny")
+ Alps_plot<-Alps_plot%>%filter(Region=="Alps")
 #View(Alps_plot)
 
  
@@ -163,7 +163,7 @@ count2
 
 #Plant Functional Trait CBNA data base
 
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/PFT_CBNA.csv?token=GHSAT0AAAAAABTEILHCYLBLKD7OAZ2CJOG6YSXP3QQ"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/PFT_CBNA.csv?token=GHSAT0AAAAAABTEILHDIESTCJEKV34X46UUYSXQGGQ"
 PFT_CBNA <- read_csv(f, col_names = TRUE)
 #View(PFT_CBNA)
 
@@ -187,7 +187,7 @@ data_traitA%>%filter(dispersal_mode=="NA")->data_traitA2
 
 ## Import dispersal mode from (2) missing_CSR_dispersal to data_sp
 
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/missing_CSR_dispersal.csv?token=GHSAT0AAAAAABTEILHDEM66PYDCI2SPLDAUYSXP5SQ"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/missing_CSR_dispersal.csv?token=GHSAT0AAAAAABTEILHC7V74LX6J63K66K7QYSXQHEQ"
 CSR_dispersal_2 <- read_csv(f, col_names = TRUE)
 
 CSR_dispersal_2 %>%
@@ -217,7 +217,7 @@ TRAITS<-data_trait%>%select(cd_ref, dispersal_mode, nom_reconnu, famille)%>%uniq
 
 #1_jOINING WITH CSR_CBNA_extra - column SA_CSR
 
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_CBNA_extra.csv?token=GHSAT0AAAAAABTEILHDWU2YPNUR36VGEDTOYSXP67Q"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_CBNA_extra.csv?token=GHSAT0AAAAAABTEILHDHUL5UHGB4U2KIMEGYSXQIDA"
 SA_CSR<- read_csv(f, col_names = TRUE)
 #view(SA_CSR)
 
@@ -227,7 +227,7 @@ view(TRAITS)
 
 #2_jOINING WITH CSR_lifeform_FI - Strategie_CSR
 
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_lifeform_FI.csv?token=GHSAT0AAAAAABTEILHC2XPDLF552YSDCU2YYSXQACQ"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_lifeform_FI.csv?token=GHSAT0AAAAAABTEILHCIHK7MKYSKFV7EIAOYSXQITA"
 CSR_lifeform<- read_csv(f, col_names = TRUE)
 
 CSR_lifeform %>%
@@ -241,6 +241,11 @@ CSR_lifeform %>%
 CSR_lifeform %>%
   dplyr::select(cdref7, Forme_vie)%>% right_join(TRAITS, by=c('cdref7'='cdref7'), na.rm=TRUE)%>%unique->TRAITS
 
+#Rename column
+PFT_CBNA %>%
+  rename(
+    Hauteur_moyenne_CBNA_VALS='_Hauteur_moyenne_CBNA_VALS'
+  )->PFT_CBNA
 
 
 ## Other trait from CBNA file
