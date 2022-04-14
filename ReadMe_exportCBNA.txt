@@ -57,9 +57,5 @@ Les plots suivant on +1 : Aucune idee pourquoi car c'est coherent avec les donne
 GLIAX-07
 PC-05 avait un doublon avant->OK
 
-
-
-
-
 SLIA-x
 S1-x -> 1% de plant cover absent dans export cbna -> verifier sur fiches (doit avoir un autre nom)
