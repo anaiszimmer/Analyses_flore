@@ -16,7 +16,6 @@ ok - remove "-" in the Plot name (gps_id) -> IN DOC EXPORT
 	SLIA-099->SLIA-99 -> était déjà écrit comme ça
 	
 	en revanche il reste un plot S3-07a, or il n'existe pas d'autre S3-07 -> on le change en S3-07 ou en S3-07A?
-	Attention, il y a 2 T60!
 
 OK - Glacier de Grébroulaz -> Glacier de Gébroulaz (Apparement ca a ete changé)
 
