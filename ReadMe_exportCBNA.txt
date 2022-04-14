@@ -48,6 +48,7 @@ et j'ai verifié avec ton export precedent du 22 nov 2021 et S1-12 etait aussi v
 	-> c'est corrigé (il y avait 2 T60...)
 	
 	- Pour Orny, O63 certaines especes ont changé (Minuartia verna) normal? + OLIA-02; OLIA-07
+	-> OK
 
 Notes:
 Les plots suivant on -1 en richesse comparer aux donnees precedente car les NA sont retirés:
