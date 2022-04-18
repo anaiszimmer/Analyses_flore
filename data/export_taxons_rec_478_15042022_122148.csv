@@ -1,0 +1,327 @@
+﻿cd_ref,famille,nom_valide,tax_type,nbre_obs,annee_min,annee_max
+1,,ZZ non rattachable , ,3,2020,2020
+2,,ZZ relevé sans végétation, ,30,2019,2020
+3,,Zz Taxon à vérifier , ,1,2020,2020
+7,,Zz Mousses , ,1,2020,2020
+79783,Sapindaceae,"Acer pseudoplatanus L., 1753",P,3,2019,2019
+79913,Asteraceae,"Achillea nana L., 1753",P,34,2019,2020
+80183,Asteraceae,"Adenostyles alliariae (Gouan) A.Kern., 1871",P,3,2019,2019
+80184,Asteraceae,"Adenostyles alpina (L.) Bluff & Fingerh., 1825",P,22,2019,2020
+80190,Asteraceae,"Adenostyles leucophylla (Willd.) Rchb., 1831",P,46,2019,2020
+80564,Poaceae,"Agrostis alpina Scop., 1771",P,2,2019,2019
+80729,Poaceae,"Agrostis rupestris All., 1785",P,27,2019,2020
+80741,Poaceae,"Agrostis schraderiana Bech., 1938",P,65,2019,2020
+81032,Rosaceae,"Alchemilla alpigena Buser, 1894",P,1,2019,2019
+81033,Rosaceae,"Alchemilla alpina L., 1753",P,23,2019,2020
+81055,Rosaceae,"Alchemilla colorata Buser, 1892",P,1,2019,2019
+81075,Rosaceae,"Alchemilla fissa Günther & Schummel, 1819",P,3,2019,2020
+81088,Rosaceae,"Alchemilla glabra Neygenf., 1821",P,1,2019,2019
+81140,Rosaceae,"Alchemilla pentaphyllea L., 1753",P,3,2019,2019
+81159,Rosaceae,"Alchemilla saxatilis Buser, 1891",P,4,2019,2020
+81179,Rosaceae,"Alchemilla transiens (Buser) Buser, 1898",P,6,2019,2019
+81563,Betulaceae,"Alnus alnobetula (Ehrh.) K.Koch, 1872",P,3,2019,2019
+81638,Poaceae,"Alopecurus gerardi Vill., 1786",P,5,2019,2019
+82478,Primulaceae,"Androsace alpina (L.) Lam., 1779",P,9,2019,2020
+82519,Primulaceae,"Androsace obtusifolia All., 1785",P,2,2019,2020
+82529,Primulaceae,"Androsace pubescens DC., 1805",P,1,2019,2019
+82796,Asteraceae,"Antennaria dioica (L.) Gaertn., 1791",P,3,2019,2020
+82914,Poaceae,"Anthoxanthum alpinum Á.Löve & D.Löve, 1948",P,42,2019,2020
+82922,Poaceae,"Anthoxanthum odoratum L., 1753",P,4,2019,2020
+82999,Fabaceae,"Anthyllis vulneraria L., 1753",P,2,2019,2019
+83279,Brassicaceae,"Arabis alpina L., 1753",P,46,2019,2020
+83296,Brassicaceae,"Arabis caerulea (All.) Haenke, 1789",P,9,2019,2020
+83303,Brassicaceae,"Arabis ciliata Clairv., 1811",P,1,2019,2019
+83528,Ericaceae,"Arctostaphylos uva-ursi (L.) Spreng., 1825",P,4,2019,2020
+83808,Plumbaginaceae,"Armeria alpina Willd., 1809",P,8,2019,2020
+83973,Asteraceae,"Artemisia genipi Weber, 1775",P,34,2019,2020
+84053,Asteraceae,"Artemisia umbelliformis Lam., 1783",P,46,2019,2020
+84526,Aspleniaceae,"Asplenium septentrionale (L.) Hoffm., 1796",P,1,2019,2019
+84534,Aspleniaceae,"Asplenium trichomanes L., 1753",P,1,2019,2019
+84540,Aspleniaceae,"Asplenium viride Huds., 1762",P,1,2020,2020
+84937,Apiaceae,"Astrantia minor L., 1753",P,2,2019,2019
+84998,Athyriaceae,"Athyrium distentifolium Tausch ex Opiz, 1820",P,11,2019,2020
+84999,Athyriaceae,"Athyrium filix-femina (L.) Roth, 1799",P,1,2019,2019
+85418,Poaceae,"Avenella flexuosa (L.) Drejer, 1838",P,23,2019,2020
+85602,Orobanchaceae,"Bartsia alpina L., 1753",P,9,2019,2020
+85903,Betulaceae,"Betula pendula Roth, 1788",P,6,2019,2020
+85904,Betulaceae,"Betula pubescens Ehrh., 1791",P,8,2019,2020
+86082,Polygonaceae,"Bistorta vivipara (L.) Delarbre, 1800",P,1,2019,2019
+86183,Ophioglossaceae,"Botrychium lunaria (L.) Sw., 1801",P,9,2019,2020
+86301,Poaceae,"Brachypodium rupestre (Host) Roem. & Schult., 1817",P,1,2019,2019
+87100,Apiaceae,"Bupleurum stellatum L., 1753",P,1,2020,2020
+87299,Poaceae,"Calamagrostis villosa (Chaix) J.F.Gmel., 1791",P,2,2019,2019
+87501,Ericaceae,"Calluna vulgaris (L.) Hull, 1808",P,5,2019,2020
+87607,Campanulaceae,"Campanula barbata L., 1759",P,3,2020,2020
+87618,Campanulaceae,"Campanula cenisia L., 1763",P,2,2020,2020
+87622,Campanulaceae,"Campanula cochleariifolia Lam., 1785",P,37,2019,2020
+87716,Campanulaceae,"Campanula rhomboidalis L., 1753",P,1,2019,2019
+87724,Campanulaceae,"Campanula scheuchzeri Vill., 1779",P,24,2019,2020
+87891,Brassicaceae,"Cardamine alpina Willd., 1800",P,12,2019,2020
+87970,Brassicaceae,"Cardamine resedifolia L., 1753",P,48,2019,2020
+88108,Asteraceae,"Carduus defloratus L., 1759",P,2,2019,2020
+88359,Cyperaceae,"Carex atrata L., 1753",P,4,2019,2020
+88470,Cyperaceae,"Carex digitata L., 1753",P,1,2019,2019
+88504,Cyperaceae,"Carex ferruginea Scop., 1772",P,1,2019,2019
+88515,Cyperaceae,"Carex foetida All., 1785",P,4,2019,2019
+88519,Cyperaceae,"Carex frigida All., 1785",P,7,2019,2020
+88708,Cyperaceae,"Carex myosuroides Vill., 1779",P,1,2019,2019
+88747,Cyperaceae,"Carex pallescens L., 1753",P,1,2019,2019
+88756,Cyperaceae,"Carex parviflora Host, 1801",P,5,2019,2020
+88865,Cyperaceae,"Carex sempervirens Vill., 1787",P,3,2019,2020
+90071,Caryophyllaceae,"Cerastium pedunculatum Gaudin, 1828",P,50,2019,2020
+90076,Caryophyllaceae,"Cerastium pumilum Curtis, 1777",P,1,2019,2019
+90116,Caryophyllaceae,"Cerastium uniflorum Clairv., 1811",P,20,2020,2020
+90359,Apiaceae,"Chaerophyllum villarsii W.D.J.Koch, 1837",P,1,2019,2019
+90863,Caryophyllaceae,"Cherleria sedoides L., 1753",P,7,2019,2020
+91410,Asteraceae,"Cirsium spinosissimum (L.) Scop., 1769",P,15,2019,2020
+93004,Asteraceae,"Crepis aurea (L.) Tausch, 1828",P,1,2019,2019
+93027,Asteraceae,"Crepis conyzifolia (Gouan) A.Kern., 1872",P,1,2020,2020
+93469,Pteridaceae,"Cryptogramma crispa (L.) R.Br. ex Hook., 1842",P,2,2019,2020
+94066,Cystopteridaceae,"Cystopteris fragilis (L.) Bernh., 1805",P,14,2019,2020
+94207,Poaceae,"Dactylis glomerata L., 1753",P,1,2019,2019
+94266,Orchidaceae,"Dactylorhiza maculata (L.) Soó, 1962",P,3,2020,2020
+95056,Lycopodiaceae,"Diphasiastrum alpinum (L.) Holub, 1975",P,2,2019,2020
+95225,Asteraceae,"Doronicum grandiflorum Lam., 1786",P,10,2020,2020
+95356,Brassicaceae,"Draba siliquosa M.Bieb., 1808",P,4,2019,2020
+95461,Rosaceae,"Dryas octopetala L., 1753",P,2,2019,2020
+95567,Dryopteridaceae,"Dryopteris filix-mas (L.) Schott, 1834",P,18,2019,2020
+96127,Onagraceae,"Epilobium alpestre (Jacq.) Krock., 1787",P,1,2019,2019
+96130,Onagraceae,"Epilobium alsinifolium Vill., 1779",P,7,2019,2020
+96134,Onagraceae,"Epilobium anagallidifolium Lam., 1786",P,28,2019,2020
+96136,Onagraceae,"Epilobium angustifolium L., 1753",P,8,2019,2020
+96163,Onagraceae,"Epilobium dodonaei Vill., 1779",P,1,2019,2019
+96208,Onagraceae,"Epilobium montanum L., 1753",P,1,2019,2019
+96736,Asteraceae,"Erigeron alpinus L., 1753",P,4,2019,2019
+96805,Asteraceae,"Erigeron schleicheri Gremli, 1886",P,1,2019,2019
+96816,Asteraceae,"Erigeron uniflorus L., 1753",P,1,2019,2019
+97725,Orobanchaceae,"Euphrasia alpina Lam., 1786",P,1,2020,2020
+97772,Orobanchaceae,"Euphrasia minima Jacq. ex DC., 1805",P,41,2019,2020
+97804,Orobanchaceae,"Euphrasia salisburgensis Funck, 1794",P,12,2019,2019
+98039,Poaceae,"Festuca acuminata Gaudin, 1811",P,11,2019,2020
+98054,Poaceae,"Festuca alpina Suter, 1802",P,1,2020,2020
+98272,Poaceae,"Festuca halleri All., 1785",P,28,2019,2020
+98280,Poaceae,"Festuca heterophylla Lam., 1779",P,1,2019,2019
+98370,Poaceae,"Festuca melanopsis Foggi, Gr.Rossi & Signorini, 1999",P,14,2019,2019
+98404,Poaceae,"Festuca nigrescens Lam., 1788",P,11,2019,2020
+98512,Poaceae,"Festuca rubra L., 1753",P,1,2019,2019
+98598,Poaceae,"Festuca varia Haenke, 1789",P,3,2020,2020
+98607,Poaceae,"Festuca violacea Ser. ex Gaudin, 1808",P,21,2019,2020
+98865,Rosaceae,"Fragaria vesca L., 1753",P,3,2019,2019
+99334,Lamiaceae,"Galeopsis tetrahit L., 1753",P,1,2019,2019
+99372,Rubiaceae,"Galium anisophyllon Vill., 1779",P,1,2020,2020
+99854,Gentianaceae,"Gentiana acaulis L., 1753",P,1,2020,2020
+99866,Gentianaceae,"Gentiana bavarica L., 1753",P,1,2019,2019
+99910,Gentianaceae,"Gentiana nivalis L., 1753",P,4,2019,2020
+99928,Gentianaceae,"Gentiana punctata L., 1753",P,1,2019,2019
+99982,Gentianaceae,"Gentianella campestris (L.) Börner, 1912",P,1,2020,2020
+100160,Geraniaceae,"Geranium sylvaticum L., 1753",P,2,2019,2019
+100208,Rosaceae,"Geum montanum L., 1753",P,9,2019,2020
+100214,Rosaceae,"Geum reptans L., 1753",P,18,2019,2020
+100636,Cystopteridaceae,"Gymnocarpium dryopteris (L.) Newman, 1851",P,2,2019,2019
+101394,Caryophyllaceae,"Herniaria alpina Chaix, 1785",P,1,2020,2020
+101755,Asteraceae,"Hieracium caesioides Arv.-Touv., 1876",P,3,2019,2019
+102078,Asteraceae,"Hieracium intybaceum All., 1773",P,4,2019,2020
+102235,Asteraceae,"Hieracium murorum L., 1753",P,1,2020,2020
+102350,Asteraceae,"Hieracium piliferum Hoppe, 1799",P,2,2019,2020
+102701,Asteraceae,"Hieracium villosum Jacq., 1762",P,1,2020,2020
+102842,Fabaceae,"Hippocrepis comosa L., 1753",P,1,2020,2020
+102925,Asteraceae,"Homogyne alpina (L.) Cass., 1821",P,12,2019,2020
+103018,Brassicaceae,"Hornungia alpina (L.) O.Appel, 1997",P,5,2020,2020
+103019,Brassicaceae,"Hornungia petraea (L.) Rchb., 1838",P,3,2019,2020
+103034,Lycopodiaceae,"Huperzia selago (L.) Bernh. ex Schrank & Mart., 1829",P,5,2019,2019
+103316,Hypericaceae,"Hypericum perforatum L., 1753",P,1,2019,2019
+103578,Apiaceae,"Imperatoria ostruthium L., 1753",P,41,2019,2020
+104221,Juncaceae,"Juncus jacquinii L., 1767",P,1,2020,2020
+104362,Juncaceae,"Juncus trifidus L., 1753",P,12,2019,2020
+104397,Cupressaceae,"Juniperus communis L., 1753",P,2,2020,2020
+104734,Asteraceae,"Lactuca alpina (L.) Benth. & Hook.f., 1876",P,1,2019,2019
+105042,Pinaceae,"Larix decidua Mill., 1768",P,6,2019,2020
+105076,Apiaceae,"Laserpitium latifolium L., 1753",P,1,2019,2019
+105502,Asteraceae,"Leontodon hispidus L., 1753",P,31,2019,2020
+105765,Asteraceae,"Leucanthemopsis alpina (L.) Heywood, 1975",P,80,2019,2020
+106144,Plantaginaceae,"Linaria alpina (L.) Mill., 1768",P,10,2019,2020
+106555,Caprifoliaceae,"Lonicera caerulea L., 1753",P,1,2019,2019
+106653,Fabaceae,"Lotus corniculatus L., 1753",P,10,2019,2020
+106812,Juncaceae,"Luzula alpina Hoppe, 1839",P,2,2019,2020
+106813,Juncaceae,"Luzula alpinopilosa (Chaix) Breistr., 1947",P,72,2019,2020
+106838,Juncaceae,"Luzula lutea (All.) DC., 1805",P,8,2019,2020
+106859,Juncaceae,"Luzula spicata (L.) DC., 1805",P,5,2019,2019
+106861,Juncaceae,"Luzula sudetica (Willd.) Schult., 1814",P,1,2020,2020
+108863,Brassicaceae,"Murbeckiella pinnatifida (Lam.) Rothm., 1939",P,2,2019,2019
+108987,Boraginaceae,"Myosotis alpestris F.W.Schmidt, 1794",P,14,2019,2020
+109366,Poaceae,"Nardus stricta L., 1753",P,8,2019,2020
+109680,Brassicaceae,"Noccaea rotundifolia (L.) Moench, 1802",P,16,2020,2020
+110061,Asteraceae,"Omalotheca hoppeana (W.D.J.Koch) Sch.Bip. & F.W.Schultz, 1861",P,17,2019,2020
+110063,Asteraceae,"Omalotheca supina (L.) DC., 1838",P,44,2019,2020
+111771,Ericaceae,"Orthilia secunda (L.) House, 1921",P,4,2019,2020
+111960,Polygonaceae,"Oxyria digyna (L.) Hill, 1768",P,104,2019,2020
+112011,Apiaceae,"Pachypleurum mutellinoides (Crantz) Holub, 1983",P,1,2019,2019
+112426,Celastraceae,"Parnassia palustris L., 1753",P,2,2019,2019
+112584,Orobanchaceae,"Pedicularis kerneri Dalla Torre, 1882",P,7,2019,2020
+112604,Orobanchaceae,"Pedicularis verticillata L., 1753",P,2,2019,2019
+112816,Crassulaceae,"Petrosedum rupestre (L.) P.V.Heath, 1987",P,3,2020,2020
+113175,Poaceae,"Phleum alpinum L., 1753",P,1,2020,2020
+113224,Poaceae,"Phleum rhaeticum (Humphries) Rauschert, 1979",P,1,2019,2019
+113362,Campanulaceae,"Phyteuma betonicifolium Vill., 1787",P,2,2019,2020
+113381,Campanulaceae,"Phyteuma hemisphaericum L., 1753",P,16,2019,2020
+113432,Pinaceae,"Picea abies (L.) H.Karst., 1881",P,11,2019,2020
+113527,Asteraceae,"Pilosella peleteriana (Mérat) F.W.Schultz & Sch.Bip., 1862",P,2,2019,2019
+113639,Lentibulariaceae,"Pinguicula vulgaris L., 1753",P,1,2019,2019
+113806,Plantaginaceae,"Plantago alpina L., 1753",P,13,2019,2019
+114011,Orchidaceae,"Platanthera bifolia (L.) Rich., 1817",P,1,2020,2020
+114105,Poaceae,"Poa alpina L., 1753",P,245,2019,2020
+114151,Poaceae,"Poa cenisia All., 1789",P,100,2019,2020
+114262,Poaceae,"Poa laxa Haenke, 1791",P,29,2019,2020
+114287,Poaceae,"Poa minor Gaudin, 1808",P,14,2019,2019
+114297,Poaceae,"Poa nemoralis L., 1753",P,29,2019,2019
+114523,Polygalaceae,"Polygala alpina (DC.) Steud., 1821",P,1,2019,2019
+115061,Dryopteridaceae,"Polystichum lonchitis (L.) Roth, 1799",P,2,2019,2019
+115156,Salicaceae,"Populus tremula L., 1753",P,3,2019,2019
+115449,Rosaceae,"Potentilla crantzii (Crantz) Beck ex Fritsch, 1897",P,1,2019,2019
+115470,Rosaceae,"Potentilla erecta (L.) Raeusch., 1797",P,1,2019,2019
+115498,Rosaceae,"Potentilla grandiflora L., 1753",P,1,2019,2019
+115813,Asteraceae,"Prenanthes purpurea L., 1753",P,1,2019,2019
+115868,Primulaceae,"Primula farinosa L., 1753",P,1,2019,2019
+115875,Primulaceae,"Primula hirsuta All., 1773",P,1,2020,2020
+116543,Ericaceae,"Pyrola minor L., 1753",P,10,2019,2019
+117043,Ranunculaceae,"Ranunculus glacialis L., 1753",P,11,2019,2020
+117125,Ranunculaceae,"Ranunculus montanus Willd., 1799",P,1,2020,2020
+117222,Ranunculaceae,"Ranunculus sartorianus Boiss. & Heldr., 1854",P,6,2019,2019
+117590,Orobanchaceae,"Rhinanthus angustifolius C.C.Gmel., 1806",P,3,2019,2019
+117601,Orobanchaceae,"Rhinanthus glacialis Personnat, 1863",P,1,2020,2020
+117679,Ericaceae,"Rhododendron ferrugineum L., 1753",P,30,2019,2020
+119149,Rosaceae,"Rubus idaeus L., 1753",P,7,2019,2019
+119450,Polygonaceae,"Rumex arifolius All., 1773",P,3,2019,2019
+119587,Polygonaceae,"Rumex scutatus L., 1753",P,79,2019,2020
+119754,Caryophyllaceae,"Sabulina verna (L.) Rchb., 1832",P,17,2019,2020
+119780,Caryophyllaceae,"Sagina apetala Ard., 1763",P,6,2019,2019
+119798,Caryophyllaceae,"Sagina glabra (Willd.) Fenzl, 1833",P,12,2019,2020
+119827,Caryophyllaceae,"Sagina saginoides (L.) H.Karst., 1882",P,96,2019,2020
+119933,Salicaceae,"Salix appendiculata Vill., 1789",P,10,2019,2019
+119968,Salicaceae,"Salix breviserrata Flod., 1940",P,1,2020,2020
+119977,Salicaceae,"Salix caprea L., 1753",P,3,2019,2020
+120037,Salicaceae,"Salix foetida Schleich. ex DC., 1805",P,1,2019,2019
+120048,Salicaceae,"Salix glaucosericea Flod., 1943",P,9,2019,2020
+120052,Salicaceae,"Salix hastata L., 1753",P,28,2019,2020
+120056,Salicaceae,"Salix helvetica Vill., 1789",P,22,2019,2020
+120057,Salicaceae,"Salix herbacea L., 1753",P,33,2019,2020
+120085,Salicaceae,"Salix laggeri Wimm., 1854",P,33,2019,2020
+120135,Salicaceae,"Salix myrsinifolia Salisb., 1796",P,21,2019,2020
+120193,Salicaceae,"Salix reticulata L., 1753",P,2,2019,2019
+120195,Salicaceae,"Salix retusa L., 1759",P,34,2019,2020
+120219,Salicaceae,"Salix serpyllifolia Scop., 1772",P,3,2019,2020
+120965,Saxifragaceae,"Saxifraga aizoides L., 1753",P,54,2019,2020
+120973,Saxifragaceae,"Saxifraga androsacea L., 1753",P,2,2020,2020
+120978,Saxifragaceae,"Saxifraga aspera L., 1753",P,6,2019,2020
+120988,Saxifragaceae,"Saxifraga bryoides L., 1753",P,128,2019,2020
+121047,Saxifragaceae,"Saxifraga exarata Vill., 1779",P,14,2019,2020
+121115,Saxifragaceae,"Saxifraga moschata Wulfen, 1781",P,6,2019,2019
+121132,Saxifragaceae,"Saxifraga oppositifolia L., 1753",P,65,2019,2020
+121139,Saxifragaceae,"Saxifraga paniculata Mill., 1768",P,42,2019,2020
+122106,Crassulaceae,"Sedum album L., 1753",P,2,2019,2019
+122107,Crassulaceae,"Sedum alpestre Vill., 1779",P,66,2019,2020
+122116,Crassulaceae,"Sedum annuum L., 1753",P,2,2019,2019
+122124,Crassulaceae,"Sedum atratum L., 1763",P,59,2019,2020
+122150,Crassulaceae,"Sedum dasyphyllum L., 1753",P,5,2019,2019
+122419,Crassulaceae,"Sempervivum arachnoideum L., 1753",P,38,2019,2020
+122467,Crassulaceae,"Sempervivum montanum L., 1753",P,35,2019,2020
+122493,Crassulaceae,"Sempervivum tectorum L., 1753",P,1,2020,2020
+122593,Asteraceae,"Senecio doronicum (L.) L., 1759",P,5,2019,2019
+123176,Rosaceae,"Sibbaldia procumbens L., 1753",P,17,2019,2020
+123374,Caryophyllaceae,"Silene acaulis (L.) Jacq., 1762",P,8,2019,2020
+123683,Caryophyllaceae,"Silene vulgaris (Moench) Garcke, 1869",P,1,2019,2019
+124139,Primulaceae,"Soldanella alpina L., 1753",P,2,2019,2019
+124308,Rosaceae,"Sorbus aucuparia L., 1753",P,1,2019,2019
+125238,Blechnaceae,"Struthiopteris spicant (L.) Weiss, 1770",P,1,2020,2020
+126563,Lamiaceae,"Thymus polytrichus A.Kern. ex Borbás, 1890",P,1,2019,2019
+126564,Lamiaceae,"Thymus praecox Opiz, 1824",P,3,2019,2019
+126821,Asteraceae,"Tolpis staticifolia (All.) Sch.Bip., 1861",P,38,2019,2020
+127219,Fabaceae,"Trifolium alpinum L., 1753",P,2,2019,2019
+127237,Fabaceae,"Trifolium badium Schreb., 1804",P,29,2019,2020
+127419,Fabaceae,"Trifolium pallescens Schreb., 1804",P,57,2019,2020
+127439,Fabaceae,"Trifolium pratense L., 1753",P,4,2019,2020
+127469,Fabaceae,"Trifolium saxatile All., 1773",P,3,2019,2019
+127503,Fabaceae,"Trifolium thalii Vill., 1779",P,21,2019,2020
+128042,Asteraceae,"Tussilago farfara L., 1753",P,12,2019,2020
+128268,Urticaceae,"Urtica dioica L., 1753",P,1,2019,2019
+128345,Ericaceae,"Vaccinium myrtillus L., 1753",P,12,2019,2020
+128354,Ericaceae,"Vaccinium uliginosum L., 1753",P,1,2019,2019
+128355,Ericaceae,"Vaccinium vitis-idaea L., 1753",P,3,2020,2020
+128419,Caprifoliaceae,"Valeriana officinalis L., 1753",P,1,2020,2020
+128445,Caprifoliaceae,"Valeriana tripteris L., 1753",P,1,2019,2019
+128520,Melanthiaceae,"Veratrum album L., 1753",P,1,2019,2019
+128789,Plantaginaceae,"Veronica alpina L., 1753",P,63,2019,2020
+128797,Plantaginaceae,"Veronica aphylla L., 1753",P,1,2019,2019
+128810,Plantaginaceae,"Veronica bellidioides L., 1753",P,2,2019,2020
+128871,Plantaginaceae,"Veronica fruticans Jacq., 1762",P,34,2019,2020
+128872,Plantaginaceae,"Veronica fruticulosa L., 1762",P,1,2019,2019
+128938,Plantaginaceae,"Veronica officinalis L., 1753",P,2,2019,2019
+129033,Plantaginaceae,"Veronica urticifolia Jacq., 1773",P,2,2019,2019
+129520,Violaceae,"Viola biflora L., 1753",P,1,2019,2019
+129527,Violaceae,"Viola calcarata L., 1753",P,4,2019,2019
+130729,Asteraceae,"Achillea erba-rotta subsp. moschata (Wulfen) Vacc., 1909",P,22,2019,2020
+131226,Betulaceae,"Alnus alnobetula subsp. alnobetula (Ehrh.) K.Koch, 1872",P,4,2019,2019
+131467,Fabaceae,"Anthyllis vulneraria subsp. alpestris (Kit. ex Schult.) Asch. & Graebn., 1908",P,1,2019,2019
+132395,Poaceae,"Calamagrostis varia subsp. varia (Schrad.) Host, 1809",P,2,2019,2019
+132515,Campanulaceae,"Campanula rotundifolia subsp. rotundifolia L., 1753",P,1,2019,2019
+132522,Campanulaceae,"Campanula scheuchzeri subsp. scheuchzeri Vill., 1779",P,22,2019,2020
+132593,Asteraceae,"Carduus defloratus subsp. defloratus L., 1759",P,1,2020,2020
+132810,Cyperaceae,"Carex sempervirens subsp. sempervirens Vill., 1787",P,2,2019,2019
+133087,Caryophyllaceae,"Cerastium arvense subsp. strictum Gaudin, 1828",P,40,2019,2020
+133108,Caryophyllaceae,"Cerastium fontanum subsp. vulgare (Hartm.) Greuter & Burdet, 1982",P,1,2019,2019
+133787,Poaceae,"Deschampsia cespitosa subsp. cespitosa (L.) P.Beauv., 1812",P,1,2019,2019
+134095,Ericaceae,"Empetrum nigrum subsp. hermaphroditum (Hagerup) Böcher, 1952",P,1,2020,2020
+134113,Onagraceae,"Epilobium dodonaei subsp. dodonaei Vill., 1779",P,3,2019,2019
+134114,Onagraceae,"Epilobium dodonaei subsp. fleischeri (Hochst.) Schinz & Thell., 1923",P,93,2019,2020
+134221,Asteraceae,"Erigeron uniflorus subsp. uniflorus L., 1753",P,20,2019,2020
+136974,Cupressaceae,"Juniperus communis subsp. nana (Hook.) Syme, 1868",P,3,2019,2020
+137102,Apiaceae,"Laserpitium halleri subsp. halleri Crantz, 1767",P,1,2019,2019
+137189,Asteraceae,"Leontodon hispidus subsp. hispidus L., 1753",P,11,2019,2020
+137320,Plantaginaceae,"Linaria alpina subsp. alpina (L.) Mill., 1768",P,40,2019,2020
+137438,Fabaceae,"Lotus corniculatus subsp. alpinus (DC.) Rothm., 1963",P,44,2019,2020
+137520,Juncaceae,"Luzula spicata subsp. spicata (L.) DC., 1805",P,32,2019,2020
+137521,Juncaceae,"Luzula sylvatica subsp. sieberi (Tausch) K.Richt., 1890",P,1,2019,2019
+137836,Caryophyllaceae,"Minuartia recurva subsp. recurva (All.) Schinz & Thell., 1907",P,1,2020,2020
+138547,Papaveraceae,"Papaver alpinum subsp. alpinum L., 1753",P,8,2020,2020
+140918,Crassulaceae,"Sempervivum montanum subsp. montanum L., 1753",P,1,2020,2020
+140979,Asteraceae,"Senecio ovatus subsp. alpestris (Gaudin) Herborg, 1987",P,1,2019,2019
+141108,Caryophyllaceae,"Silene acaulis subsp. acaulis (L.) Jacq., 1762",P,7,2019,2020
+141110,Caryophyllaceae,"Silene acaulis subsp. bryoides (Jord.) Nyman, 1878",P,57,2019,2020
+141182,Caryophyllaceae,"Silene nutans subsp. nutans L., 1753",P,1,2019,2019
+141296,Asteraceae,"Solidago virgaurea subsp. minuta (L.) Arcang., 1882",P,1,2019,2019
+141317,Rosaceae,"Sorbus aucuparia subsp. aucuparia L., 1753",P,4,2019,2019
+141953,Poaceae,"Trisetum spicatum subsp. ovatipaniculatum Hultén ex Jonsell, 1975",P,1,2019,2019
+142047,Ericaceae,"Vaccinium uliginosum subsp. microphyllum (Lange) Tolm., 1936",P,21,2019,2020
+149728,Poaceae,"Poa nemoralis var. glauca Gaudin, 1811",P,2,2020,2020
+151113,Salicaceae,"Salix repens var. repens L., 1753",P,1,2019,2019
+152216,Fabaceae,"Trifolium pratense var. villosum DC., 1805",P,2,2019,2019
+159722,Asteraceae,"Leucanthemopsis alpina subsp. alpina (L.) Heywood, 1975",P,114,2019,2020
+188940,Rosaceae,"Alchemilla L., 1753",P,1,2019,2019
+189857,Betulaceae,"Betula L., 1753",P,1,2020,2020
+192551,Poaceae,"Festuca L., 1753",P,1,2020,2020
+193276,Asteraceae,"Hieracium L., 1753",P,11,2019,2020
+193498,Hypericaceae,"Hypericum L., 1753",P,1,2019,2019
+194322,Juncaceae,"Luzula DC., 1805",P,1,2020,2020
+197334,Salicaceae,"Salix L., 1753",P,7,2019,2020
+198226,Asteraceae,"Taraxacum F.H.Wigg., 1780",P,22,2019,2020
+198449,Lamiaceae,"Thymus L., 1753",P,1,2019,2019
+198631,Fabaceae,"Trifolium L., 1753",P,1,2020,2020
+610642,Asteraceae,"Jacobaea incana (L.) Veldkamp, 2006",P,43,2019,2020
+610917,Apiaceae,"Mutellina adonidifolia (J.Gay) Gutermann, 2006",P,1,2019,2019
+611356,Asteraceae,"Scorzoneroides pyrenaica (Gouan) Holub, 1977",P,51,2019,2020
+613160,Poaceae,"Agrostis rupestris var. rupestris All., 1785",P,93,2019,2020
+613604,Crassulaceae,"Sempervivum montanum var. burnatii (Wettst. ex Hayek) Praeger, 1932",P,27,2019,2020
+715557,Asteraceae,"Pilosella Hill, 1756",P,5,2019,2020
+717310,Saxifragaceae,"Micranthes stellaris (L.) Galasso, Banfi & Soldano, 2005",P,40,2019,2020
+717382,Asteraceae,"Pilosella glacialis (Reyn. ex Lachen.) F.W.Schultz & Sch.Bip., 1862",P,2,2019,2019
+717630,Asteraceae,"Taraxacum officinale F.H.Wigg., 1780",P,4,2019,2019
+717660,Asteraceae,"Taraxacum venustum Dahlst., 1907",P,1,2019,2019
+717731,Caryophyllaceae,"Atocion rupestre (L.) Oxelman, 2001",P,13,2019,2020
+718302,Poaceae,"Alopecurus gerardi subsp. gerardi Vill., 1786",P,1,2019,2019
+718360,Poaceae,"Helictochloa versicolor subsp. versicolor (Vill.) Romero Zarco, 2011",P,2,2019,2020
+718363,Brassicaceae,"Hornungia alpina subsp. alpina (L.) O.Appel, 1997",P,2,2019,2019
+718390,Asteraceae,"Pilosella peleteriana subsp. peleteriana (Mérat) F.W.Schultz & Sch.Bip., 1862",P,1,2020,2020
+973446,Crassulaceae,"Petrosedum ochroleucum (Chaix) Niederle, 2014",P,1,2019,2019
+997256,Orobanchaceae,"Pedicularis gyroflexa Vill., 1787",P,1,2019,2019
+1000304,Caryophyllaceae,"Cherleria laricifolia (L.) Iamonico, 2016",P,2,2019,2019
+20000658,Asteraceae,Hieracium murorum gpe ,P,5,2019,2019
