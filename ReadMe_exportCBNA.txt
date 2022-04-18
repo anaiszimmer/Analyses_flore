@@ -1,3 +1,5 @@
+AU 15 AVRIL 2022 -> all notes solved
+****************************************************************************************************************************************************************
 Glacier Blanc data
 OK - replace "_" per "-" in Plot (eg. B4_10 -> B4-10)- R code added to modify it
 
@@ -59,3 +61,6 @@ PC-05 avait un doublon avant->OK
 
 SLIA-x
 S1-x -> 1% de plant cover absent dans export cbna -> verifier sur fiches (doit avoir un autre nom)
+
+
+********************************************************************************************************************************************************************
