@@ -14,16 +14,16 @@ library(ggplot2)
 
 #data species = export CBNA - last used is 22 Nov 2021
 
-f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/export_478_13042022_172215.csv?token=GHSAT0AAAAAABTEILHCJ7NIWPO6M2DAMAYMYSXQDTQ"
+f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/export_478_15042022_124220.csv"
 data_sp <- read_csv(f, col_names = TRUE)
 #View(data_sp)
 
 #data plot = Anais csv plot, with geomorphology on it (for later) + colonne cleaned
 
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/AlpsAndes_plots.csv?token=GHSAT0AAAAAABTEILHCZPXIHSJK3WFICLI6YSXQEZQ"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/AlpsAndes_plots.csv"
 Alps_plot <- read_csv(f, col_names = TRUE)
-#filter Alps data
 
+#filter Alps data
  Alps_plot<-Alps_plot%>%filter(Region=="Alps")
 #View(Alps_plot)
 
@@ -33,42 +33,30 @@ Alps_plot <- read_csv(f, col_names = TRUE)
   #Rename column
 data_sp %>%
   rename(
-    Plot='code_gps'
+    Plot='code_gps',
   )->data_sp
-#View(data_sp)
+
 
  #Create Site variable (with shorter name than lieudit)
 data_sp<-data_sp%>%
   mutate(Site=case_when(
     lieudit=="Glacier Blanc" ~"Glacier Blanc",
-    lieudit=="Glacier de Gébroulaz"~"Gebroulaz", ## Attention le e avec accent se transforme en ? parfois
-    lieudit=="Glacier des Pélerins"~"Pelerins",  ## Attention le e avec accent se transforme en ? 
+    lieudit=="Glacier de Gébroulaz"~"Gebroulaz", 
+    lieudit=="Glacier des Pélerins"~"Pelerins",  
     lieudit=="Glacier de Saint-Sorlin"~"Saint Sorlin",
     lieudit=="Glacier du Tour"~"Tour",
     lieudit=="Glacier d'Orny"~"Orny"))
 
 unique(data_sp$Site)
 
-#select variables of interest
-data_sp<-data_sp%>%select(Site,Plot,nom_reconnu,cd_ref, famille, alti_calc )
 
-
- #replace ZZ relev? sans v?g?tation by na
-data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'ZZ relevé sans végétation','na'))->data_sp  ## Attention le e avec accent se transforme en ? a l'ouverure de R
-data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'Zz Mousses','na'))->data_sp
-data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'ZZ non rattachable','na'))->data_sp
-data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'Zz Taxon à vérifier','na'))->data_sp
+#replace ZZ releve sans vegetation by na
+data_sp %>% mutate(nom_reconnu_ss_auteur=str_replace(nom_reconnu_ss_auteur,'ZZ relevé sans végétation','na'))->data_sp
+data_sp %>% mutate(nom_reconnu_ss_auteur=str_replace(nom_reconnu_ss_auteur,'Zz Mousses','na'))->data_sp #je supprime les MOusses ici, dumoins pour le calcul de richesse, 
+#car on considere que les plantes vasculaires - les mousses sont dans la SBC.
+# data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'ZZ non rattachable','na'))->data_sp
+# data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'Zz Taxon à vérifier','na'))->data_sp
  
-#Change plot name in data_sp file (export CBNA) for correspondence with other files (Plot - geomorpho file, NDVI data, ect)
-data_sp %>% mutate(Plot=str_replace(Plot,'_','-'))->data_sp 
-data_sp %>% mutate(Plot=str_replace(Plot,'T08a','T08A'))->data_sp
-data_sp %>% mutate(Plot=str_replace(Plot,'T13a','T13A'))->data_sp
-data_sp %>% mutate(Plot=str_replace(Plot,'S3-5','S3-05'))->data_sp
-data_sp %>% mutate(Plot=str_replace(Plot,'T-65','T65'))->data_sp
-data_sp %>% mutate(Plot=str_replace(Plot,'SLIA-9','SLIA-09'))->data_sp
-data_sp %>% mutate(Plot=str_replace(Plot,'SLIA-099','SLIA-99'))->data_sp
-
-
 #View(data_sp)
 
 #count plot per glacier in data_sp and Alps_plot
@@ -79,41 +67,48 @@ plot1
 # <chr>         <int>
 # 1 Gebroulaz        69
 # 2 Glacier Blanc    93
-# 3 Pelerins         70
-# 4 Saint Sorlin     55
-# 5 Tour             66
+# 3 Orny             52
+# 4 Pelerins         70
+# 5 Saint Sorlin     55
+# 6 Tour             66
 
 data_sp%>%select(Site, Plot)%>%group_by(Site, Plot)%>%count()%>%group_by(Site)%>%count()->plot2
 plot2
 # Site              n
 # <chr>         <int>
-# 1 Gebroulaz        60 -> OK 9 plots that dont have cover (GB1-03; GB1-04, GB1-05, GB1-10, GBA-02, GBA-03, GBA-05, GBA-06, GBA-10)
+# 1 Gebroulaz        69
 # 2 Glacier Blanc    92 -> B3-03 dont have floristic data (not surveyed by Cedric's team??) - they only have geomorpho data
-# 3 Pelerins         69 -> P100: missing in CBNA export (might correspond to New 1985-2003 plot) - I have the data in my hold excel file
-# 4 Saint Sorlin     55 -> OK
-# 5 Tour             65 -> T13B: missing in CBNA export - I have the data in my hold excel file
+# 3 Orny             52 
+# 4 Pelerins         70
+# 5 Saint Sorlin     55
+# 6 Tour             66
 
-#Removing plot with problems from Alps_plot
-Alps_plot<-Alps_plot%>%subset(Plot!="B3-03")%>%subset(Plot!="P100")%>%subset(Plot!="T13B")
-#view(Alps_plot)
+#Deleting plot B3-03 with missing veg data (from AlpsPlot)
+Alps_plot<-Alps_plot%>%subset(Plot!="B3-03")
+
 
 #******************************************************************************
 # RICHNESS
 #******************************************************************************
 ##Test calcul Richness index to compare with previous export files - RICHNESS INDEX - Gebroulaz - Saint Sorlin - Tour -Pelerins
 
-data_sp %>%filter(nom_reconnu!="na")%>% group_by(Plot) %>% summarize(Plant_Richness=n()) %>% right_join(Alps_plot, by=c('Plot'='Plot'))->Alps_plot
+data_sp %>%filter(nom_reconnu_ss_auteur!="na")%>% group_by(Plot) %>% summarize(Plant_Richness=n()) %>% right_join(Alps_plot, by=c('Plot'='Plot'))->Alps_plot
 
- #verif data is ok : comparison between Plant_Richness and Richness (previous data calculated without CBNA export)
-check_Richness_Cover<-Alps_plot%>%select(Plot, Richness, Plant_Richness, Plant_cover, Cover, BSC_cover)
+#  #verif data is ok : comparison between Plant_Richness and Richness (previous data calculated without CBNA export)
+# check_Richness_Cover<-Alps_plot%>%select(Plot, Richness, Plant_Richness, Plant_cover, Cover, BSC_cover)
+# 
+# check_Richness_Cover$Richness<-as.numeric(check_Richness_Cover$Richness)
+# check_Richness_Cover$Plant_Richness<-as.numeric(check_Richness_Cover$Plant_Richness)
+# check_Richness_Cover %>%mutate(dif=Richness-Plant_Richness)%>%filter(dif!="0")->check_Richness_Cover
+# #view(check_Richness_Cover)
 
-check_Richness_Cover$Richness<-as.numeric(check_Richness_Cover$Richness)
-check_Richness_Cover$Plant_Richness<-as.numeric(check_Richness_Cover$Plant_Richness)
-check_Richness_Cover %>%mutate(dif=Richness-Plant_Richness)%>%filter(dif!="0")->check_Richness_Cover
-#view(check_Richness_Cover)
-
-#!!!!!!!!!!!!!!!!!!!!!
-#-> P62 a du etre rentre deux fois
+##
+#GLIAX-07 was sp was missing in previous counting -> OK
+#O63-> error in the field data (Saliz herbacea twice)
+#OLIA-02 -> Error in field data sheet (Cardus defloratus x2)->OK
+#P100/T13-B-> inversé a corriger !!!!!!!!!!!!!!
+#PC-05-> error in field data sheet (Salix herbacea twice)
+#PA-10-> error in previous doc, richness=11
 
 #after checking na values for richness are not errors, and correspond to no-vegetation plot, replace NA value by 0
 Alps_plot$Plant_Richness[is.na(Alps_plot$Plant_Richness)]<-0
@@ -144,9 +139,18 @@ data_sp
 ## Count data -> Balanced or unbalanced?
 data_sp%>%group_by(Site, Plot, ageChronoG)%>%count()%>%group_by(ageChronoG)%>%count()->count1
 count1 #-> unbalanced sampling
+# ageChronoG        n
+# <fct>         <int>
+# 1 0-7 yrs          49
+# 2 7-12 years       57
+# 3 12-19 years      67
+# 4 19-36 yrs        99
+# 5 36-100 yrs       47
+# 6 LIA - Control    61
+# 7 NA               24
 
 ## c(0,7,13,20,30,120,175) = 7 years, 6 years, 7 years, 10years, 90 years, 55 years # to follow a balanced sampling between classes.
-data_sp$ageChronoG2<-cut(data_sp$age, c(0,7,13,20,30,120,175))
+data_sp$ageChronoG2<-cut(data_sp$age, c(0,7,14,21,32,120,175))
 
 levels(data_sp$ageChronoG2)=c("0-7 yrs","7-13 years","13-20 years", "20-30 yrs","30-120 yrs","LIA - Control")
 data_sp
@@ -154,9 +158,209 @@ data_sp
 data_sp%>%group_by(Site, Plot, ageChronoG2)%>%count()%>%group_by(ageChronoG2)%>%count()->count2
 count2
 
+# ageChronoG2       n
+# <fct>         <int>
+# 1 0-7 yrs          49
+# 2 7-13 years       73
+# 3 13-20 years      70
+# 4 20-30 yrs        74
+# 5 30-120 yrs       76
+# 6 LIA - Control    38
+# 7 NA               24
+
+
+
 #******************************************************************************
 # CREATING TRAIT DATA BASE FOR PROGLACIAL SPECIES
 #******************************************************************************
+
+# Our list of taxons
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/export_taxons_rec_478_15042022_122148.csv"
+taxons <- read_csv(f, col_names = TRUE)
+#view(taxons)
+
+##Plant Functional Trait CBNA file
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/PFT_CBNA.csv?token=GHSAT0AAAAAABTEILHDIESTCJEKV34X46UUYSXQGGQ"
+PFT_CBNA <- read_csv(f, col_names = TRUE)
+#View(PFT_CBNA)
+
+#jointure
+PFT_CBNA %>%
+  dplyr::select(CD_ref, mode_dispersion_CBNA_VALS)%>% right_join(taxons, by=c('CD_ref'='cd_ref'))->taxon_trait
+taxon_trait %>%rename(dispersal_mode=mode_dispersion_CBNA_VALS)->taxon_trait ##rename column "mode_dispersion_CBNA_VALS" to friendlier name
+#view(taxon_trait)  
+
+#dividing taxon trait into two tables: 1 with dispersal from previous CBNA data base, and 2 with dispersal missing
+taxon_trait$dispersal_mode[is.na(taxon_trait$dispersal_mode)]<-"NA"
+taxon_trait%>%filter(dispersal_mode!="NA")->taxon_trait1
+taxon_trait%>%filter(dispersal_mode=="NA")->taxon_trait2
+#view(taxon_trait2)
+
+## Import dispersal mode from (2) missing_CSR_dispersal to data_sp
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/missing_CSR_dispersal.csv?token=GHSAT0AAAAAABTEILHC7V74LX6J63K66K7QYSXQHEQ"
+CSR_dispersal_2 <- read_csv(f, col_names = TRUE)
+#view(CSR_dispersal_2)
+CSR_dispersal_2 %>%
+  dplyr::select(CD_REF, dissemination)%>% right_join(taxon_trait2, by=c('CD_REF'='CD_ref'))->taxon_trait2
+
+taxon_trait2 %>%select(-dispersal_mode)%>%rename(dispersal_mode=dissemination)->taxon_trait2
+
+#merge data_trait1 and data Trait2
+TRAITS<-merge(taxon_trait1,taxon_trait2, all=TRUE)
+unique(TRAITS$dispersal_mode)
+
+TRAITS%>%mutate(cd_ref=coalesce(CD_ref, CD_REF))%>%unique->TRAITS
+view(TRAITS)
+
+## CSR
+
+#Join with CSR_CBNA_SA_CSR (work CBNA specialist)
+
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_CBNA_extra.csv?token=GHSAT0AAAAAABTEILHDHUL5UHGB4U2KIMEGYSXQIDA"
+SA_CSR<- read_csv(f, col_names = TRUE)
+#view(SA_CSR)
+
+SA_CSR %>%select(CD_REF7, SA_CSR)%>% right_join(TRAITS, by=c('CD_REF7'='CD_ref'))%>%unique->TRAITS
+view(TRAITS)#328 entries (Il doit y avoir deux doublons dans la donnees SA_CSR)
+
+
+TRAITS %>%select(-SA_CSR)%>%unique%>%count() #326 entries -> doublons avec deux valeurs de CSR differentes pour le meme taxon. A RECHERCHER !!!
+TRAITS%>%group_by(cd_ref)%>%summarize(count_CDREF=n())->TRAITS_check
+view(TRAITS_check)
+# duplicates are:
+# -81179, Alchemilla transiens (Buser) Buser, 1898 - CSS and CCS -> Le taxon se repete 4 fois dans SA_CSR (3 css et 1 ccs)-> modifier pour CSS
+# -133087, Cerastium arvense subsp. strictum Gaudin, 1828 - CRS and CCS (Les deux strategies sont presente une fois pour exactement le meme taxon) ????
+
+TRAITS$SA_CSR[TRAITS$cd_ref=="81179"]<-"css"
+TRAITS%>%unique%>%select(-CD_REF7,-CD_REF) ->TRAITS
+view(TRAITS) #327 entries
+
+
+
+
+## Jointure avec la liste des 322 taxons concaténée avec les données de Baseflor 32 taxons A COMPLETER
+
+
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/Baseflor.csv"
+
+baseflor<-read_csv(f, col_names = TRUE)
+View(baseflor)
+
+
+baseflor %>%select(cd_ref,
+                   nom_reconnu_ss_auteur,
+                   CHOROLOGIE,
+                   sexualité,
+                   pollinisation,
+                   inflorescence,
+                   fruit,
+                   dissémination,
+                   TYPE_BIOLOGIQUE, FORMATION_VEGETALE,
+                   CARACT_ECOLOG_HABITAT_OPTI,
+                   INDICATION_PHYTOSOCIOLOGIQUE_CARACTERISTIQUE)%>%right_join(TRAITS, by=c('cd_ref'='cd_ref'))->TRAITS
+view(TRAITS)
+
+
+
+#Concatenation des deux bases de données de dissemination
+
+TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore (et épizoochore ?)','épizoochore'))->TRAITS
+TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore(et épizoochore ?)','épizoochore'))->TRAITS
+TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore ?','anémochore'))->TRAITS
+TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore et dyszoochore','anémochore'))->TRAITS
+TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'autochore ?','barochore'))->TRAITS
+TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'autochore ? (et dyszoochore)','mymécochore'))->TRAITS # A VERIFIER
+TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'némochore et dyszoochore','anémochore'))->TRAITS
+
+
+TRAITS$dispersal_mode[TRAITS$cd_ref=="90863"]<-"barochore"
+TRAITS$dispersal_mode[TRAITS$cd_ref=="997256"]<-"barochore"
+TRAITS$dispersal_mode[TRAITS$cd_ref=="125238"]<-"autochore"
+
+
+TRAITS%>%select(cd_ref,nom_reconnu_ss_auteur, dispersal_mode,dissémination, pollinisation)->TRAITS2
+view(TRAITS2)
+
+
+
+
+
+
+# Ajout donnees pollinisation deja travaillées par Sophie
+
+
+
+CSR_dispersal_2 %>%
+  dplyr::select(CD_REF, plollinisation)%>% right_join(TRAITS, by=c('CD_REF'='cd_ref'))->TRAITS
+
+
+
+
+
+
+
+
+#old code
+
+****************************************************************************************************
+
+
+
+
+
+# Life form
+
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_lifeform_FI.csv?token=GHSAT0AAAAAABTEILHCIHK7MKYSKFV7EIAOYSXQITA"
+CSR_lifeform<- read_csv(f, col_names = TRUE)
+view(CSR_lifeform)
+### Life Form
+
+CSR_lifeform %>%
+  dplyr::select(cdref7, Forme_vie)%>% right_join(TRAITS, by=c('cdref7'='cdref7'), na.rm=TRUE)%>%unique->TRAITS
+
+#Rename column
+PFT_CBNA %>%
+  rename(
+    Hauteur_moyenne_CBNA_VALS='_Hauteur_moyenne_CBNA_VALS'
+  )->PFT_CBNA
+
+
+## Other trait from CBNA file
+PFT_CBNA %>%
+  dplyr::select(CD_ref,
+                Hauteur_moyenne_CBNA_VALS,
+                Vittoz_SD_SeedMass,
+                Vittoz_SD_SLAall,
+                chorologie_classe_JULVE,
+                phenologie_ordre_de_floraison_JULVE,
+                grand_type_de_formation_JULVE,
+                ListeLECA,
+                Endemisme_CBNA_VALS,
+                Feuillage_caducite_persistance_CBNA)%>% right_join(TRAITS, nom_reconnu, by=c('CD_ref'='cdref7'), na.rm=TRUE)%>%unique->TRAITS
+
+view(TRAITS)
+#write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS.csv")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+######### OLD
 
 ####DISPERSAL MODE
 ### Import dispersal mode from (1) PFT_CBNA to Trait data frame
@@ -168,7 +372,8 @@ PFT_CBNA <- read_csv(f, col_names = TRUE)
 #View(PFT_CBNA)
 
 PFT_CBNA %>%
-  dplyr::select(CD_ref, mode_dispersion_CBNA_VALS)%>% right_join(filter(data_sp, nom_reconnu!="na"), by=c('CD_ref'='cd_ref'), na.rm=TRUE)->data_traitA
+  dplyr::select(CD_ref, mode_dispersion_CBNA_VALS)%>% right_join(data_sp, by=c('CD_ref'='cd_ref'))->data_traitA
+
 
 data_traitA %>%
   rename(
@@ -211,7 +416,7 @@ data_trait%>%mutate(cd_ref=coalesce(CD_ref, CD_REF))%>%select(cd_ref, dispersal_
 
 TRAITS<-data_trait%>%select(cd_ref, dispersal_mode, nom_reconnu, famille)%>%unique
 
-#view(TRAITS)
+
 
 ##TEST FOR CSR
 
