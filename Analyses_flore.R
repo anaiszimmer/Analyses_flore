@@ -14,7 +14,9 @@ library(ggplot2)
 
 #data species = export CBNA - last used is 22 Nov 2021
 
-f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/export_478_15042022_124220.csv"
+
+
+f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/export_478_20042022_184348.csv"
 data_sp <- read_csv(f, col_names = TRUE)
 #View(data_sp)
 
@@ -241,7 +243,7 @@ view(TRAITS) #327 entries
 ## Jointure avec la liste des 322 taxons concaténée avec les données de Baseflor 32 taxons A COMPLETER
 
 
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/Baseflor.csv"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/Baseflor_taxon.csv"
 
 baseflor<-read_csv(f, col_names = TRUE)
 View(baseflor)
