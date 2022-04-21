@@ -226,7 +226,7 @@ view(TRAITS)#328 entries (Il doit y avoir deux doublons dans la donnees SA_CSR)
 
 TRAITS %>%select(-SA_CSR)%>%unique%>%count() #326 entries -> doublons avec deux valeurs de CSR differentes pour le meme taxon. A RECHERCHER !!!
 TRAITS%>%group_by(cd_ref)%>%summarize(count_CDREF=n())->TRAITS_check
-view(TRAITS_check)
+#view(TRAITS_check)
 # duplicates are:
 # -81179, Alchemilla transiens (Buser) Buser, 1898 - CSS and CCS -> Le taxon se repete 4 fois dans SA_CSR (3 css et 1 ccs)-> modifier pour CSS
 # -133087, Cerastium arvense subsp. strictum Gaudin, 1828 - CRS and CCS (Les deux strategies sont presente une fois pour exactement le meme taxon) ????
