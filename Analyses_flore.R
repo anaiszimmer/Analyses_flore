@@ -182,48 +182,81 @@ taxons <- read_csv(f, col_names = TRUE)
 #view(taxons)
 
 ##Plant Functional Trait CBNA file
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/PFT_CBNA.csv?token=GHSAT0AAAAAABTEILHDIESTCJEKV34X46UUYSXQGGQ"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/PFT_CBNA.csv"
 PFT_CBNA <- read_csv(f, col_names = TRUE)
 #View(PFT_CBNA)
 
 #jointure
 PFT_CBNA %>%
-  dplyr::select(CD_ref, mode_dispersion_CBNA_VALS)%>% right_join(taxons, by=c('CD_ref'='cd_ref'))->taxon_trait
-taxon_trait %>%rename(dispersal_mode=mode_dispersion_CBNA_VALS)->taxon_trait ##rename column "mode_dispersion_CBNA_VALS" to friendlier name
+  dplyr::select(CD_ref, mode_dispersion_CBNA_VALS,phenologie_fecondationpollinisation_type_CBNA)%>% right_join(taxons, by=c('CD_ref'='cd_ref'))->taxon_trait
+taxon_trait %>%rename(dispersal_mode=mode_dispersion_CBNA_VALS)%>%rename(pollinisation1=phenologie_fecondationpollinisation_type_CBNA)->taxon_trait ##rename column "mode_dispersion_CBNA_VALS" to friendlier name
 #view(taxon_trait)  
 
+
+### **DISPERSAL**
 #dividing taxon trait into two tables: 1 with dispersal from previous CBNA data base, and 2 with dispersal missing
 taxon_trait$dispersal_mode[is.na(taxon_trait$dispersal_mode)]<-"NA"
 taxon_trait%>%filter(dispersal_mode!="NA")->taxon_trait1
 taxon_trait%>%filter(dispersal_mode=="NA")->taxon_trait2
-#view(taxon_trait2)
+#view(taxon_trait1)
 
 ## Import dispersal mode from (2) missing_CSR_dispersal to data_sp
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/missing_CSR_dispersal.csv?token=GHSAT0AAAAAABTEILHC7V74LX6J63K66K7QYSXQHEQ"
-CSR_dispersal_2 <- read_csv(f, col_names = TRUE)
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/missing_CSR_dispersal.csv"
+CSR_dissemi_Pollini <- read_csv(f, col_names = TRUE)
 #view(CSR_dispersal_2)
-CSR_dispersal_2 %>%
+CSR_dissemi_Pollini %>%
   dplyr::select(CD_REF, dissemination)%>% right_join(taxon_trait2, by=c('CD_REF'='CD_ref'))->taxon_trait2
+view(taxon_trait2)
 
 taxon_trait2 %>%select(-dispersal_mode)%>%rename(dispersal_mode=dissemination)->taxon_trait2
 
 #merge data_trait1 and data Trait2
-TRAITS<-merge(taxon_trait1,taxon_trait2, all=TRUE)
-unique(TRAITS$dispersal_mode)
+TRAITS1<-merge(taxon_trait1,taxon_trait2, all=TRUE)
+unique(TRAITS1$dispersal_mode)
 
-TRAITS%>%mutate(cd_ref=coalesce(CD_ref, CD_REF))%>%unique->TRAITS
+TRAITS1%>%mutate(cd_ref=coalesce(CD_ref, CD_REF))%>%unique%>%select(-CD_ref,-CD_REF)->TRAITS1
+TRAITS1%>%rename(dissemination_compil=dispersal_mode)->TRAITS1 #changement de nom pour comparaison donnees avec base JULVE 
+#(dispersion_compil = donnees CBNA + base JULVE pour donnees manquantes)
+view(TRAITS1)
+
+
+
+### **POLLINISATION**
+
+#dividing TRAITS1 into two tables: 1 with dissemination from previous CBNA data base, and 2 with pollinisation missing
+TRAITS1$pollinisation1[is.na(TRAITS1$pollinisation1)]<-"NA"
+TRAITS1%>%filter(pollinisation1!="NA")->TRAITS1a
+TRAITS1%>%filter(pollinisation1=="NA")->TRAITS1b
+#view(TRAITS1a)
+
+# import for completed doc by Sophie from Julve
+CSR_dissemi_Pollini %>%
+  dplyr::select(CD_REF, pollinisation)%>% right_join(TRAITS1b, by=c('CD_REF'='cd_ref'))->TRAITS1b
+view(TRAITS1b)
+
+TRAITS1b %>%select(-pollinisation1)%>%rename(pollinisation1=pollinisation)->TRAITS1b
+
+#merge data_trait1 and data Trait2
+TRAITS<-merge(TRAITS1a,TRAITS1b, all=TRUE)
+unique(TRAITS$pollinisation1)
+
+TRAITS%>%mutate(cd_ref=coalesce(cd_ref, CD_REF))%>%unique%>%select(-CD_REF)->TRAITS
+TRAITS%>%rename(pollinisation_compil=pollinisation1)->TRAITS #changement de nom pour comparaison donnees avec base JULVE 
+#(pollinisation_compil = donnees CBNA + base JULVE pour donnees manquantes)
 view(TRAITS)
 
-## CSR
+
+
+### **CSR STRATEGIES**
 
 #Join with CSR_CBNA_SA_CSR (work CBNA specialist)
 
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_CBNA_extra.csv?token=GHSAT0AAAAAABTEILHDHUL5UHGB4U2KIMEGYSXQIDA"
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_CBNA_extra.csv"
 SA_CSR<- read_csv(f, col_names = TRUE)
 #view(SA_CSR)
 
-SA_CSR %>%select(CD_REF7, SA_CSR)%>% right_join(TRAITS, by=c('CD_REF7'='CD_ref'))%>%unique->TRAITS
-view(TRAITS)#328 entries (Il doit y avoir deux doublons dans la donnees SA_CSR)
+SA_CSR %>%select(CD_REF7, SA_CSR)%>% right_join(TRAITS, by=c('CD_REF7'='cd_ref'))%>%unique->TRAITS
+view(TRAITS)#329 entries (Il doit y avoir deux/trois doublons dans la donnees SA_CSR)
 
 
 TRAITS %>%select(-SA_CSR)%>%unique%>%count() #326 entries -> doublons avec deux valeurs de CSR differentes pour le meme taxon. A RECHERCHER !!!
@@ -232,13 +265,16 @@ TRAITS%>%group_by(cd_ref)%>%summarize(count_CDREF=n())->TRAITS_check
 # duplicates are:
 # -81179, Alchemilla transiens (Buser) Buser, 1898 - CSS and CCS -> Le taxon se repete 4 fois dans SA_CSR (3 css et 1 ccs)-> modifier pour CSS
 # -133087, Cerastium arvense subsp. strictum Gaudin, 1828 - CRS and CCS (Les deux strategies sont presente une fois pour exactement le meme taxon) ????
+# - 83528, Arctostaphylos uva-ursi (L.) Spreng., 1825 - same problem
 
-TRAITS$SA_CSR[TRAITS$cd_ref=="81179"]<-"css"
-TRAITS%>%unique%>%select(-CD_REF7,-CD_REF) ->TRAITS
-view(TRAITS) #327 entries
+TRAITS$SA_CSR[TRAITS$CD_REF7=="81179"]<-"css"
+TRAITS%>%unique ->TRAITS
+view(TRAITS) #328 entries
 
 
 
+
+### **BASEFLOR JULVE**
 
 ## Jointure avec la liste des 322 taxons concaténée avec les données de Baseflor 32 taxons A COMPLETER
 
@@ -259,41 +295,31 @@ baseflor %>%select(cd_ref,
                    dissémination,
                    TYPE_BIOLOGIQUE, FORMATION_VEGETALE,
                    CARACT_ECOLOG_HABITAT_OPTI,
-                   INDICATION_PHYTOSOCIOLOGIQUE_CARACTERISTIQUE)%>%right_join(TRAITS, by=c('cd_ref'='cd_ref'))->TRAITS
+                   INDICATION_PHYTOSOCIOLOGIQUE_CARACTERISTIQUE)%>%right_join(TRAITS, by=c('cd_ref'='CD_REF7'))->TRAITS
 view(TRAITS)
 
 
 
 #Concatenation des deux bases de données de dissemination
 
-TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore (et épizoochore ?)','épizoochore'))->TRAITS
-TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore(et épizoochore ?)','épizoochore'))->TRAITS
-TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore ?','anémochore'))->TRAITS
-TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore et dyszoochore','anémochore'))->TRAITS
-TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'autochore ?','barochore'))->TRAITS
-TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'autochore ? (et dyszoochore)','mymécochore'))->TRAITS # A VERIFIER
-TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'némochore et dyszoochore','anémochore'))->TRAITS
+# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore (et épizoochore ?)','épizoochore'))->TRAITS
+# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore(et épizoochore ?)','épizoochore'))->TRAITS
+# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore ?','anémochore'))->TRAITS
+# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore et dyszoochore','anémochore'))->TRAITS
+# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'autochore ?','barochore'))->TRAITS
+# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'autochore ? (et dyszoochore)','mymécochore'))->TRAITS # A VERIFIER
+# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'némochore et dyszoochore','anémochore'))->TRAITS
+# 
+# 
+# TRAITS$dispersal_mode[TRAITS$cd_ref=="90863"]<-"barochore"
+# TRAITS$dispersal_mode[TRAITS$cd_ref=="997256"]<-"barochore"
+# TRAITS$dispersal_mode[TRAITS$cd_ref=="125238"]<-"autochore"
 
 
-TRAITS$dispersal_mode[TRAITS$cd_ref=="90863"]<-"barochore"
-TRAITS$dispersal_mode[TRAITS$cd_ref=="997256"]<-"barochore"
-TRAITS$dispersal_mode[TRAITS$cd_ref=="125238"]<-"autochore"
+TRAITS%>%select(cd_ref,nom_reconnu_ss_auteur, dissemination_compil,dissémination, pollinisation_compil,pollinisation, SA_CSR)->TRAITS_comparison
+view(TRAITS_comparison)
 
-
-TRAITS%>%select(cd_ref,nom_reconnu_ss_auteur, dispersal_mode,dissémination, pollinisation)->TRAITS2
-view(TRAITS2)
-
-
-
-
-
-
-# Ajout donnees pollinisation deja travaillées par Sophie
-
-
-
-CSR_dispersal_2 %>%
-  dplyr::select(CD_REF, plollinisation)%>% right_join(TRAITS, by=c('CD_REF'='cd_ref'))->TRAITS
+#write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS_comparison.csv")
 
 
 
@@ -302,13 +328,9 @@ CSR_dispersal_2 %>%
 
 
 
-#old code
-
-****************************************************************************************************
 
 
-
-
+#******* PREVIOUS CODE *********************************************************************************************
 
 # Life form
 
@@ -342,83 +364,6 @@ PFT_CBNA %>%
 
 view(TRAITS)
 #write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS.csv")
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-######### OLD
-
-####DISPERSAL MODE
-### Import dispersal mode from (1) PFT_CBNA to Trait data frame
-
-#Plant Functional Trait CBNA data base
-
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/PFT_CBNA.csv?token=GHSAT0AAAAAABTEILHDIESTCJEKV34X46UUYSXQGGQ"
-PFT_CBNA <- read_csv(f, col_names = TRUE)
-#View(PFT_CBNA)
-
-PFT_CBNA %>%
-  dplyr::select(CD_ref, mode_dispersion_CBNA_VALS)%>% right_join(data_sp, by=c('CD_ref'='cd_ref'))->data_traitA
-
-
-data_traitA %>%
-  rename(
-    dispersal_mode=mode_dispersion_CBNA_VALS ##rename column "mode_dispersion_CBNA_VALS" to friendlier name
-  )->data_traitA
-
-
-#dividing data traitA into two table: A1 with dispersal from previous CBNA data base, and A2 with dispersal missing
-
-data_traitA$dispersal_mode[is.na(data_traitA$dispersal_mode)]<-"NA"
-
-data_traitA%>%filter(dispersal_mode!="NA")->data_traitA
-
-
-data_traitA%>%filter(dispersal_mode=="NA")->data_traitA2
-
-## Import dispersal mode from (2) missing_CSR_dispersal to data_sp
-
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/missing_CSR_dispersal.csv?token=GHSAT0AAAAAABTEILHC7V74LX6J63K66K7QYSXQHEQ"
-CSR_dispersal_2 <- read_csv(f, col_names = TRUE)
-
-CSR_dispersal_2 %>%
-  dplyr::select(CD_REF, dissemination)%>% right_join(data_traitA2, by=c('CD_REF'='CD_ref'), na.rm=TRUE)->data_traitA2
-
-data_traitA2 %>%select(CD_REF, dissemination, Site, Plot, nom_reconnu, famille, alti_calc)%>%rename(dispersal_mode=dissemination)->data_traitA2
-
-
-#merge data_traitA and data TraitA2
-
-data_trait<-merge(data_traitA,data_traitA2, all=TRUE)
-
-unique(data_trait$dispersal_mode)
-
-# # Cleaning names in dispersal_mode 
-# data_sp %>% mutate(dispersal_mode=str_replace(dispersal_mode,'épizoochore','epizoochore'))->data_sp #### Attention le e avec accent se transforme en ? a l'ouverure de R
-# data_sp %>% mutate(dispersal_mode=str_replace(dispersal_mode,'epizochore','epizoochore'))->data_sp
-# data_sp %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore','anemochore'))->data_sp
-
-data_trait%>%mutate(cd_ref=coalesce(CD_ref, CD_REF))%>%select(cd_ref, dispersal_mode, Site, Plot, nom_reconnu, famille, alti_calc)->data_trait
-
-TRAITS<-data_trait%>%select(cd_ref, dispersal_mode, nom_reconnu, famille)%>%unique
-
-
 
 ##TEST FOR CSR
 
@@ -472,6 +417,15 @@ view(TRAITS)
 #write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS.csv")
 
 
+
+
+
+
+
+
+
+
+
 #**********************************************************************************************************
 ### PLOT DISPERSAL 
 
@@ -512,8 +466,27 @@ ggplot(data = DispAge, aes(ageChronoG2, prop, fill = dispersal_mode)) +
 
 
 #******************************************************************************
-# test RQL ANALYSIS
+# test RLQ ANALYSIS
 #******************************************************************************
+
+# Preparation de la base de donnees
+
+view(data_sp)
+
+library(dplyr)
+library(tidyr)
+library(stringr)
+
+#duplicatinf the comm_taxon column
+data_sp$comm_taxon1<-data_sp$comm_taxon
+
+data_sp_ok<-data_sp%>%separate(comm_taxon1, c('Cover_sp', 'Height_sp','Facilitation', 'Assoc_BSC', 'Compet', 'Nurse_rock', 'Reprod', 'Vielle_Repro_or_Comment','Comment'),";")
+
+#write.csv(data_sp_ok,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\data_sp_cleaning_comm_taxon.csv")
+
+view(data_sp_ok)
+
+
 
 ### R matrix - environment matrix
 
