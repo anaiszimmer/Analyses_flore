@@ -256,7 +256,7 @@ SA_CSR<- read_csv(f, col_names = TRUE)
 #view(SA_CSR)
 
 SA_CSR %>%select(CD_REF7, SA_CSR)%>% right_join(TRAITS, by=c('CD_REF7'='cd_ref'))%>%unique->TRAITS
-view(TRAITS)#329 entries (Il doit y avoir deux/trois doublons dans la donnees SA_CSR)
+#view(TRAITS)#329 entries (Il doit y avoir deux/trois doublons dans la donnees SA_CSR)
 
 
 TRAITS %>%select(-SA_CSR)%>%unique%>%count() #326 entries -> doublons avec deux valeurs de CSR differentes pour le meme taxon. A RECHERCHER !!!
@@ -269,7 +269,7 @@ TRAITS%>%group_by(cd_ref)%>%summarize(count_CDREF=n())->TRAITS_check
 
 TRAITS$SA_CSR[TRAITS$CD_REF7=="81179"]<-"css"
 TRAITS%>%unique ->TRAITS
-view(TRAITS) #328 entries
+#view(TRAITS) #328 entries
 
 
 
@@ -282,7 +282,7 @@ view(TRAITS) #328 entries
 f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/Baseflor_taxon.csv"
 
 baseflor<-read_csv(f, col_names = TRUE)
-View(baseflor)
+#View(baseflor)
 
 
 baseflor %>%select(cd_ref,
@@ -296,7 +296,7 @@ baseflor %>%select(cd_ref,
                    TYPE_BIOLOGIQUE, FORMATION_VEGETALE,
                    CARACT_ECOLOG_HABITAT_OPTI,
                    INDICATION_PHYTOSOCIOLOGIQUE_CARACTERISTIQUE)%>%right_join(TRAITS, by=c('cd_ref'='CD_REF7'))->TRAITS
-view(TRAITS)
+#view(TRAITS)
 
 
 
@@ -317,113 +317,9 @@ view(TRAITS)
 
 
 TRAITS%>%select(cd_ref,nom_reconnu_ss_auteur, dissemination_compil,dissémination, pollinisation_compil,pollinisation, SA_CSR)->TRAITS_comparison
-view(TRAITS_comparison)
+#view(TRAITS_comparison)
 
 #write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS_comparison.csv")
-
-
-
-
-
-
-
-
-
-
-#******* PREVIOUS CODE *********************************************************************************************
-
-# Life form
-
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_lifeform_FI.csv?token=GHSAT0AAAAAABTEILHCIHK7MKYSKFV7EIAOYSXQITA"
-CSR_lifeform<- read_csv(f, col_names = TRUE)
-view(CSR_lifeform)
-### Life Form
-
-CSR_lifeform %>%
-  dplyr::select(cdref7, Forme_vie)%>% right_join(TRAITS, by=c('cdref7'='cdref7'), na.rm=TRUE)%>%unique->TRAITS
-
-#Rename column
-PFT_CBNA %>%
-  rename(
-    Hauteur_moyenne_CBNA_VALS='_Hauteur_moyenne_CBNA_VALS'
-  )->PFT_CBNA
-
-
-## Other trait from CBNA file
-PFT_CBNA %>%
-  dplyr::select(CD_ref,
-                Hauteur_moyenne_CBNA_VALS,
-                Vittoz_SD_SeedMass,
-                Vittoz_SD_SLAall,
-                chorologie_classe_JULVE,
-                phenologie_ordre_de_floraison_JULVE,
-                grand_type_de_formation_JULVE,
-                ListeLECA,
-                Endemisme_CBNA_VALS,
-                Feuillage_caducite_persistance_CBNA)%>% right_join(TRAITS, nom_reconnu, by=c('CD_ref'='cdref7'), na.rm=TRUE)%>%unique->TRAITS
-
-view(TRAITS)
-#write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS.csv")
-
-##TEST FOR CSR
-
-#1_jOINING WITH CSR_CBNA_extra - column SA_CSR
-
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_CBNA_extra.csv?token=GHSAT0AAAAAABTEILHDHUL5UHGB4U2KIMEGYSXQIDA"
-SA_CSR<- read_csv(f, col_names = TRUE)
-#view(SA_CSR)
-
-SA_CSR %>%
-  dplyr::select(CD_REF7, SA_CSR)%>% right_join(TRAITS, by=c('CD_REF7'='cd_ref'), na.rm=TRUE)%>%unique->TRAITS
-view(TRAITS)
-
-#2_jOINING WITH CSR_lifeform_FI - Strategie_CSR
-
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_lifeform_FI.csv?token=GHSAT0AAAAAABTEILHCIHK7MKYSKFV7EIAOYSXQITA"
-CSR_lifeform<- read_csv(f, col_names = TRUE)
-
-CSR_lifeform %>%
-  dplyr::select(cdref7, Strategie_CSR)%>% right_join(TRAITS, by=c('cdref7'='CD_REF7'), na.rm=TRUE)%>%unique->TRAITS
-
-# need to merge the data, but for some species SA_CSR est different de Strategie_CSR -> Le quel priorizer?
-
-
-### Life Form
-
-CSR_lifeform %>%
-  dplyr::select(cdref7, Forme_vie)%>% right_join(TRAITS, by=c('cdref7'='cdref7'), na.rm=TRUE)%>%unique->TRAITS
-
-#Rename column
-PFT_CBNA %>%
-  rename(
-    Hauteur_moyenne_CBNA_VALS='_Hauteur_moyenne_CBNA_VALS'
-  )->PFT_CBNA
-
-
-## Other trait from CBNA file
-PFT_CBNA %>%
-  dplyr::select(CD_ref,
-                Hauteur_moyenne_CBNA_VALS,
-                Vittoz_SD_SeedMass,
-                Vittoz_SD_SLAall,
-                chorologie_classe_JULVE,
-                phenologie_ordre_de_floraison_JULVE,
-                grand_type_de_formation_JULVE,
-                ListeLECA,
-                Endemisme_CBNA_VALS,
-                Feuillage_caducite_persistance_CBNA)%>% right_join(TRAITS, nom_reconnu, by=c('CD_ref'='cdref7'), na.rm=TRUE)%>%unique->TRAITS
-
-view(TRAITS)
-#write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS.csv")
-
-
-
-
-
-
-
-
-
 
 
 #**********************************************************************************************************
@@ -477,14 +373,50 @@ library(dplyr)
 library(tidyr)
 library(stringr)
 
-#duplicatinf the comm_taxon column
-data_sp$comm_taxon1<-data_sp$comm_taxon
+#THIS DOES NOT WORK
+# #duplicating the comm_taxon column
+# data_sp$comm_taxon1<-data_sp$comm_taxon
+# 
+# data_sp_ok<-data_sp%>%separate(comm_taxon1, c('Cover_sp', 'Height_sp','Facilitation', 'Assoc_BSC', 'Compet', 'Nurse_rock', 'Reprod', 'Vielle_Repro_or_Comment','Comment'),";")
+# 
+# #write.csv(data_sp_ok,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\data_sp_cleaning_comm_taxon.csv")
 
-data_sp_ok<-data_sp%>%separate(comm_taxon1, c('Cover_sp', 'Height_sp','Facilitation', 'Assoc_BSC', 'Compet', 'Nurse_rock', 'Reprod', 'Vielle_Repro_or_Comment','Comment'),";")
 
-#write.csv(data_sp_ok,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\data_sp_cleaning_comm_taxon.csv")
 
-view(data_sp_ok)
+
+#DO NOT MODIFY OR RUN
+Gebroulaz<-filter(data_sp, Site=="Gebroulaz")
+#write.csv(Gebroulaz,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Gebroulaz_comm_taxon.csv")
+Sorlin<-filter(data_sp, Site=="Saint Sorlin")
+#write.csv(Sorlin,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Sorlin_comm_taxon.csv")
+Pelerins<-filter(data_sp, Site=="Pelerins")
+#write.csv(Pelerins,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Pelerins_comm_taxon.csv")
+Tour<-filter(data_sp, Site=="Tour")
+#write.csv(Tour,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Tour_comm_taxon.csv")
+Orny<-filter(data_sp, Site=="Orny")
+#write.csv(Orny,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Orny_comm_taxon.csv")
+Blanc<-filter(data_sp, Site=="Glacier Blanc")
+#write.csv(Blanc,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Blanc_comm_taxon.csv")
+
+
+#Merging the 6 files
+Gebroulaz_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Gebroulaz_comm_taxon.csv")
+Sorlin_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Sorlin_comm_taxon.csv")
+Pelerins_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Pelerins_comm_taxon.csv")
+Tour_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Tour_comm_taxon.csv")
+Orny_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Orny_comm_taxon.csv")
+Blanc_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Blanc_comm_taxon.csv")
+
+
+Data_sp_1<-merge(Gebroulaz_comm_taxon,Sorlin_comm_taxon,all=TRUE)
+
+Data_sp_2<-merge(Data_sp_1,Pelerins_comm_taxon,all=TRUE)
+Data_sp_3<-merge(Data_sp_2,Tour_comm_taxon,all=TRUE)
+Data_sp_4<-merge(Data_sp_3,Orny_comm_taxon,all=TRUE)
+Data_sp_All<-merge(Data_sp_4,Blanc_comm_taxon,all=TRUE)
+view(Data_sp_All)
+
+write.csv(Data_sp_All,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Analyses_flore/data\\Data_sp_All.csv")
 
 
 
@@ -493,46 +425,16 @@ view(data_sp_ok)
 R<-Alps_plot%>%
   filter(Site!="Glacier Blanc")%>%   #remove glacier Blanc data because geomorpho highly incomplete
   select(Site,Plot,SlopeO, Landform_corr, GeoA, Rock,age)
-#view(R)
+view(R)
 
  #Import alti calc from export CBNA (data_sp) to R
 data_sp %>%
-  dplyr::select(Plot, alti_calc)%>% right_join(R, by=c('Plot'='Plot'), na.rm=TRUE)->R
-#View(R)
+  dplyr::select(Plot, alti_calc)%>%unique()%>% right_join(R, by=c('Plot'='Plot'), na.rm=TRUE)->R
+View(R)
 
 ### Q matrix - species by trait matrix
 
-TRAITS
-
-### PREVIOUS CODE ### _ TO BE REMOVE (keep somewhere else in case)
-  #identifying species with missing csr data
-data_sp$CSR[is.na(data_sp$CSR)]<-"NA"
-missing_CSR<-data_sp%>%subset(CSR=="NA")%>%select(CD_REF, nom_reconnu,famille,dispersal_mode, CSR)%>%unique
-view(missing_CSR)
-#write.csv(missing_CSR,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\missing_CSR.csv")
-
-#identifying species with missing dispersal mode data
-data_sp$dispersal_mode<-as.factor(data_sp$dispersal_mode)
-
-data_sp$dispersal_mode[is.na(data_sp$dispersal_mode)]<-"NA"
-#data_sp$dispersal_mode[is.na(data_sp$dispersal_mode)]<-"NULL"
-
-missing_dispersal_mode<-data_sp%>%subset(dispersal_mode=="NA")%>%select(CD_REF, nom_reconnu,famille,dispersal_mode, CSR)%>%unique
-view(missing_dispersal_mode)
-#write.csv(missing_dispersal_mode,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\missing_dispersal_mode.csv")
-
-
-missing_CSR_dispersal<-merge(missing_CSR, missing_dispersal_mode, all=TRUE)
-#missing_CSR_dispersal%>%unique->missing_CSR_dispersal
-view(missing_CSR_dispersal)
-#write.csv(missing_CSR_dispersal,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\missing_CSR_dispersal.csv")
-
-
-
-  #creating a species-traits matrix
-Q<-data_sp%>%select(CD_REF,libcdref7, nom_reconnu, dispersal_mode, CSR, famille)%>%unique()
-view(Q)
-
+Q<-TRAITS
 
 ### L matrix - species matrix
 L<- dcast(data_sp, Plot~nom_reconnu,value.var= 'cover_sp')
