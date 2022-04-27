@@ -53,12 +53,12 @@ unique(data_sp$Site)
 
 
 #replace ZZ releve sans vegetation by na
-data_sp %>% mutate(nom_reconnu_ss_auteur=str_replace(nom_reconnu_ss_auteur,'ZZ relevé sans végétation','na'))->data_sp
-data_sp %>% mutate(nom_reconnu_ss_auteur=str_replace(nom_reconnu_ss_auteur,'Zz Mousses','na'))->data_sp #je supprime les MOusses ici, dumoins pour le calcul de richesse, 
-#car on considere que les plantes vasculaires - les mousses sont dans la SBC.
-# data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'ZZ non rattachable','na'))->data_sp
-# data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'Zz Taxon à vérifier','na'))->data_sp
- 
+# data_sp %>% mutate(nom_reconnu_ss_auteur=str_replace(nom_reconnu_ss_auteur,'ZZ relevé sans végétation','na'))->data_sp
+# data_sp %>% mutate(nom_reconnu_ss_auteur=str_replace(nom_reconnu_ss_auteur,'Zz Mousses','na'))->data_sp #je supprime les MOusses ici, dumoins pour le calcul de richesse, 
+# #car on considere que les plantes vasculaires - les mousses sont dans la SBC.
+# # data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'ZZ non rattachable','na'))->data_sp
+# data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'Zz Taxon à vérifier','Zz Taxon a verifier'))->data_sp
+#  
 #View(data_sp)
 
 #count plot per glacier in data_sp and Alps_plot
@@ -217,7 +217,7 @@ unique(TRAITS1$dispersal_mode)
 TRAITS1%>%mutate(cd_ref=coalesce(CD_ref, CD_REF))%>%unique%>%select(-CD_ref,-CD_REF)->TRAITS1
 TRAITS1%>%rename(dissemination_compil=dispersal_mode)->TRAITS1 #changement de nom pour comparaison donnees avec base JULVE 
 #(dispersion_compil = donnees CBNA + base JULVE pour donnees manquantes)
-view(TRAITS1)
+#view(TRAITS1)
 
 
 
@@ -232,7 +232,7 @@ TRAITS1%>%filter(pollinisation1=="NA")->TRAITS1b
 # import for completed doc by Sophie from Julve
 CSR_dissemi_Pollini %>%
   dplyr::select(CD_REF, pollinisation)%>% right_join(TRAITS1b, by=c('CD_REF'='cd_ref'))->TRAITS1b
-view(TRAITS1b)
+#view(TRAITS1b)
 
 TRAITS1b %>%select(-pollinisation1)%>%rename(pollinisation1=pollinisation)->TRAITS1b
 
@@ -243,7 +243,7 @@ unique(TRAITS$pollinisation1)
 TRAITS%>%mutate(cd_ref=coalesce(cd_ref, CD_REF))%>%unique%>%select(-CD_REF)->TRAITS
 TRAITS%>%rename(pollinisation_compil=pollinisation1)->TRAITS #changement de nom pour comparaison donnees avec base JULVE 
 #(pollinisation_compil = donnees CBNA + base JULVE pour donnees manquantes)
-view(TRAITS)
+#view(TRAITS)
 
 
 
@@ -265,7 +265,7 @@ TRAITS%>%group_by(cd_ref)%>%summarize(count_CDREF=n())->TRAITS_check
 # duplicates are:
 # -81179, Alchemilla transiens (Buser) Buser, 1898 - CSS and CCS -> Le taxon se repete 4 fois dans SA_CSR (3 css et 1 ccs)-> modifier pour CSS
 # -133087, Cerastium arvense subsp. strictum Gaudin, 1828 - CRS and CCS (Les deux strategies sont presente une fois pour exactement le meme taxon) ????
-# - 83528, Arctostaphylos uva-ursi (L.) Spreng., 1825 - same problem
+# -83528, Arctostaphylos uva-ursi (L.) Spreng., 1825 - same problem
 
 TRAITS$SA_CSR[TRAITS$CD_REF7=="81179"]<-"css"
 TRAITS%>%unique ->TRAITS
@@ -298,6 +298,7 @@ baseflor %>%select(cd_ref,
                    INDICATION_PHYTOSOCIOLOGIQUE_CARACTERISTIQUE)%>%right_join(TRAITS, by=c('cd_ref'='CD_REF7'))->TRAITS
 #view(TRAITS)
 
+#write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Analyses_flore/data\\TRAITS_notcomplete.csv")
 
 
 #Concatenation des deux bases de données de dissemination
@@ -414,30 +415,243 @@ Data_sp_2<-merge(Data_sp_1,Pelerins_comm_taxon,all=TRUE)
 Data_sp_3<-merge(Data_sp_2,Tour_comm_taxon,all=TRUE)
 Data_sp_4<-merge(Data_sp_3,Orny_comm_taxon,all=TRUE)
 Data_sp_All<-merge(Data_sp_4,Blanc_comm_taxon,all=TRUE)
-view(Data_sp_All)
+#view(Data_sp_All)
 
-write.csv(Data_sp_All,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Analyses_flore/data\\Data_sp_All.csv")
+#write.csv(Data_sp_All,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Analyses_flore/data\\Data_sp_All.csv")
 
 
+##### RLQ analysis
 
-### R matrix - environment matrix
+### R matrix - environment matrix -env
+##cleaning data from Alps_plot
+#slope Orientation
+Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'-','0'))->Alps_plot 
+Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'110','ES'))->Alps_plot 
+Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'150','SE'))->Alps_plot 
+Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'180','S'))->Alps_plot 
+Alps_plot %>% mutate(SlopeD=str_replace(SlopeD,'-','0'))->Alps_plot 
+Alps_plot %>% mutate(SlopeD=str_replace(SlopeD,'<5','3'))->Alps_plot 
+Alps_plot %>% mutate(SlopeD=str_replace(SlopeD,'0-50','30'))->Alps_plot 
+#View(Alps_plot)
 
-R<-Alps_plot%>%
-  filter(Site!="Glacier Blanc")%>%   #remove glacier Blanc data because geomorpho highly incomplete
-  select(Site,Plot,SlopeO, Landform_corr, GeoA, Rock,age)
-view(R)
 
- #Import alti calc from export CBNA (data_sp) to R
-data_sp %>%
-  dplyr::select(Plot, alti_calc)%>%unique()%>% right_join(R, by=c('Plot'='Plot'), na.rm=TRUE)->R
-View(R)
+#completing age -> need to be verified and added in csv doc
 
-### Q matrix - species by trait matrix
+Alps_plot$age[Alps_plot$Plot=="P90"]<-"7" #band old =2008-2018 -> median=2013->2020-2013=7
+#Alps_plot$age[Alps_plot$Plot=="B3-03"]<-""
+Alps_plot$age[Alps_plot$Plot=="S1-14"]<-"9.5" #~same age as S1-19 (9.5 years)
+Alps_plot$age[Alps_plot$Plot=="T99"]<-"7" ##band old =2008-2018 -> median=2013->2020-2013=7
+Alps_plot$age[Alps_plot$Plot=="OLIA-01"]<-"77.5" #same age than other LIA plots
+Alps_plot$age[Alps_plot$Plot=="OLIA-09"]<-"77.5"
+Alps_plot$age[Alps_plot$Plot=="OLIA-05"]<-"77.5"
 
-Q<-TRAITS
+#data geoA missing or wrong for PA-03
+Alps_plot$GeoA[Alps_plot$Plot=="PA-03"]<-"Moderate"
+#data Sand missing for T45-> error na =0
+Alps_plot$Sand[Alps_plot$Plot=="T45"]<-"0"
 
-### L matrix - species matrix
-L<- dcast(data_sp, Plot~nom_reconnu,value.var= 'cover_sp')
-Gebroulaz_spe[is.na(Gebroulaz_spe)]<-0
-View(Gebroulaz_spe)
+R_env<-Alps_plot%>%
+  filter(Site!="Glacier Blanc")%>%filter(Plant_cover!=0)%>%   #remove glacier Blanc data because geomorpho highly incomplete
+  select(Plot,age, SlopeD, Sand, GeoA,Position_corr,SlopeO, Rock)%>%as.data.frame()#SlopeO,Landform_corr, removed
+#need to be a data frame to set row names (Setting row names on a tibble is deprecated.)
+R_env$SlopeO<-as.factor(R_env$SlopeO)
+R_env$SlopeD<-as.numeric(R_env$SlopeD)
+R_env$GeoA<-as.factor(R_env$GeoA)
+R_env$Position_corr<-as.factor(R_env$Position_corr)
+R_env$SlopeO<-as.factor(R_env$SlopeO)
+R_env$Landform_corr<-as.factor(R_env$Landform_corr)
+R_env$age<-as.numeric(R_env$age)
+R_env$Sand<-as.numeric(R_env$Sand)
+
+#sapply(R_env,class)
+unique(R_env$Position_corr)
+
+row.names(R_env)<-R_env$Plot
+R_env<-R_env%>%select(-Plot)
+
+view(R_env)
+
+#Import alti calc from export CBNA (data_sp) to env
+# data_sp %>%
+#   dplyr::select(Plot, alti_calc)%>%unique()%>% right_join(env, by=c('Plot'='Plot'), na.rm=TRUE)->env
+# View(env)
+ 
+
+### Q matrix - species by trait matrix - traits
+
+#DOES NOT WORK BECAUSE OF ALL THE ACCENTS???
+# f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/TRAITS_notcomplete.csv"
+# traits<-read_csv(f, col_names = TRUE)
+
+traits<-TRAITS
+#problem des taxons qui se repetent
+# -133087, Cerastium arvense subsp. strictum Gaudin, 1828 - CRS and CCS (Les deux strategies sont presente une fois pour exactement le meme taxon) ????
+# -83528, Arctostaphylos uva-ursi (L.) Spreng., 1825 - same problem
+# pour le moment 133087=CRS et 83528=CSS
+
+traits$SA_CSR[traits$cd_ref=="133087"]<-"crs"
+traits$SA_CSR[traits$cd_ref=="83528"]<-"css"
+
+#regroupement mode de dispersion -> zoochore
+traits %>% mutate(dissémination=str_replace(dissémination,"épizoochore",'zoochore'))->traits
+traits %>% mutate(dissémination=str_replace(dissémination,"endozoochore",'zoochore'))->traits
+traits %>% mutate(dissémination=str_replace(dissémination,"myrmécochore",'zoochore'))->traits
+
+unique(traits$dissémination)
+
+traits%>%unique()%>%filter(nom_reconnu_ss_auteur!="na")%>%
+  select(cd_ref,
+         nom_reconnu_ss_auteur, 
+         dissémination,
+         pollinisation,
+         sexualité,
+         CHOROLOGIE,
+         FORMATION_VEGETALE,
+         SA_CSR)%>%
+  drop_na()->Q_traits
+
+#add new column noNA
+Q_traits$noNA<-1
+
+view(Q_traits) #row=222
+unique(Q_traits$cd_ref)#222 -> taxon present seulement au glacier Blanc, dont on a les traits complet??
+
+### L matrix - species matrix -spe
+#reloading the save csv on GitHub
+f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/Data_sp_All.csv"
+spe_all <- read_csv(f, col_names = TRUE)
+view(spe_all)
+
+#removing data from glacier Blanc
+spe<-spe_all%>%filter(Site!="Glacier Blanc")
+
+#selecting species with trait data complete
+Q_traits %>%select(nom_reconnu_ss_auteur, noNA)%>% right_join(spe, by=c('nom_reconnu_ss_auteur'='nom_reconnu_ss_auteur'))->spe
+spe<-spe%>%filter(noNA==1)
+view(spe)
+
+list_spe<-spe$nom_reconnu_ss_auteur%>%as_tibble()%>%rename(nom_reconnu_ss_auteur='value')%>%unique()#192 taxons
+list_spe$sp_ok<-1
+view(list_spe)
+
+
+#selecting taxon present in list_spe in Q_traits to create Q_traits_ok
+
+list_spe %>%select(nom_reconnu_ss_auteur, sp_ok)%>% 
+      right_join(Q_traits, by=c('nom_reconnu_ss_auteur'='nom_reconnu_ss_auteur'))%>%
+      as.data.frame()->Q_traits
+Q_traits_ok<-Q_traits%>%filter(sp_ok==1)%>%select(-sp_ok,-cd_ref,-noNA)
+Q_traits_ok$sexualité<-as.factor(Q_traits_ok$sexualité)
+Q_traits_ok$pollinisation<-as.factor(Q_traits_ok$pollinisation)
+Q_traits_ok$dissémination<-as.factor(Q_traits_ok$dissémination)
+Q_traits_ok$CHOROLOGIE<-as.factor(Q_traits_ok$CHOROLOGIE)
+Q_traits_ok$FORMATION_VEGETALE<-as.factor(Q_traits_ok$FORMATION_VEGETALE)
+Q_traits_ok$SA_CSR<-as.factor(Q_traits_ok$SA_CSR)
+
+#sapply(Q_traits_ok,class)
+
+row.names(Q_traits_ok)<-Q_traits_ok$nom_reconnu_ss_auteur
+Q_traits_ok<-Q_traits_ok%>%select(-nom_reconnu_ss_auteur)
+
+view(Q_traits_ok)
+
+
+#creating matrix
+
+unique(spe$nom_reconnu_ss_auteur)#192 ->OK
+
+
+L_spe<-spe%>%data.table::dcast(Plot~nom_reconnu_ss_auteur,value.var= 'recouvrement_sp')
+row.names(L_spe)<-L_spe$Plot
+L_spe<-L_spe%>%select(-Plot)
+
+#names(spe) <- make.names(names(spe), unique=TRUE)
+#filter(nom_reconnu_ss_auteur !="na")
+view(L_spe)
+sapply(spe,class)
+
+
+#apply(spe, 2, function(x) any(is.na(x)))
+
+## Separate analysis of each matrix
+library(ade4)
+
+?dudi.coa
+?dudi.hillsmith
+sapply(env,class)
+
+dim(L_spe)
+dim(R_env)
+dim(Q_traits_ok)
+
+
+view(L_spe)
+
+afc_L <- dudi.coa(L_spe, scannf = FALSE, nf=2) # correspondence analysis to the sites x species matrix
+#sapply(afc_L,class)
+
+acp_R <- dudi.hillsmith(R_env, row.w = afc_L$lw,
+                             scannf = FALSE,nf=2) # sites x environment matrix
+
+acp_Q <- dudi.hillsmith(Q_traits_ok, row.w = afc_L$cw,
+                        scannf = FALSE,nf=2) # species x traits matrix principal component analyses
+
+# acp_Q <- dudi.hillsmith(Q_traits_ok, row.w = rep(1,nrow(Q_traits_ok))/nrow(Q_traits_ok),
+#                         scannf = FALSE,nf=2)
+
+#acp_Q <- dudi.hillsmith(Q_traits_ok, scann = FALSE)
+
+rlq <- rlq(acp_R, afc_L, acp_Q,
+                 scannf = FALSE)
+
+summary(rlq)
+
+## plot the output
+
+par(mfrow = c(1, 3))
+par(mfrow = c(1, 1))
+
+s.arrow(rlq$l1,boxes = FALSE)
+
+s.arrow(rlq$c1,boxes = FALSE,clabel = 0.7)
+
+s.label(rlq$lQ, boxes = FALSE,clabel = 0.7)
+
+
+?s.label()
+#***************************************************
+
+data(aravo)
+
+aravo
+dim(aravo$spe) # L matrix
+dim(aravo$env) # R matrix
+dim(aravo$traits) # Q matrix
+
+view(aravo$spe) # L matrix
+view(aravo$env) # R matrix
+view(aravo$traits) # Q matrix
+
+
+afcL.aravo <- dudi.coa(aravo$spe, scannf = FALSE) # correspondence analysis to the sites x species matrix
+
+acpR.aravo <- dudi.hillsmith(aravo$env, row.w = afcL.aravo$lw,
+                             scannf = FALSE) # sites x environment matrix
+
+acpQ.aravo <- dudi.pca(aravo$traits, row.w = afcL.aravo$cw,
+                       scannf = FALSE) # species x traits matrix principal component analyses
+
+rlq.aravo <- rlq(acpR.aravo, afcL.aravo, acpQ.aravo,
+                 scannf = FALSE)
+summary(rlq.aravo)
+
+#plots
+par(mfrow = c(1, 3))
+
+s.arrow(rlq.aravo$l1)
+
+s.arrow(rlq.aravo$c1)
+
+s.label(rlq.aravo$lQ, boxes = FALSE)
+
 
