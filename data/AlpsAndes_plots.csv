@@ -479,6 +479,7 @@ Broggi,Andes,,4,BR4-07,BR4-07,SW,30,M,M,COLL,COLL,MM,Low,,60,10,50,46,,4,2,1,10,
 Uruashraju,Andes,,4,UB4-15,UB4-15,S,15,S,S,COLL,COLL,MM,Low,,84,72.7,11.3,80,0,20,1.5,0,0,4,12,0,,16,7,1949,70
 Yanamarey,Andes,,4,Y4-18,Y4-18,E,20,C,C,gMOR,gMOR,IE,Low,,11,10,1,,,,,17,10,45,17,,,,7,1949,70
 Broggi,Andes,,4,BR4-10,BR4-10,SW,40,M,M,COLL,COLL,MM,Low,,68,26,42,36,,14.5,2,0,7,25,0,,,32,7,1948,71
+<<<<<<< HEAD
 Orny,Alps,LIA,LIA,OLIA-02,OLIA-02,E,10,M,M,gMOR (older LIA),gMOR (older LIA),IE (old),Low,2020,53,50,3,2,0,1,,47,0,2,5,40,0,0,20,1942.5,77.5
 Orny,Alps,LIA,LIA,OLIA-04,OLIA-04,E,20,M,M,BROCK,BROCK,MM/IE,Low,2020,25,15,10,10,0,20,,75,0,15,5,1,0,54,9,1942.5,77.5
 Orny,Alps,LIA,LIA,OLIA-06,OLIA-06,E,15,M,M,gMOR (older LIA),gMOR (older LIA),MM,Low,2020,90,83,7,2,0,5,,8,0,1,1,6,2,0,19,1942.5,77.5
@@ -487,6 +488,16 @@ Orny,Alps,LIA,LIA,OLIA-10,OLIA-10,E,20,M,M,BROCK,BROCK,IE,Low,2020,51,50,1,1,0,<
 Gebroulaz,Alps, LIA , LIA , GLIA-02, GLIA-02,NW,5,C,C,LiaMOR,LiaMOR,no,No,2019,60,35,25,25.00%, NA , NA , NA ,0,3,20,17,0,,40,12,1925,94
 Gebroulaz,Alps, LIA , LIA , GLIA-03, GLIA-03,N,5,C,C,LiaMOR,LiaMOR,no,No,2019,52,50,2,2.00%, NA , NA , 0.2cm ,0,0,40,8,0,,48,24,1925,94
 Gebroulaz,Alps, LIA , LIA , GLIA-04, GLIA-04,E,20,M,M,LiaMOR,LiaMOR,no,No,2019,81,80,1,1.00%, + , NA , NA ,0,0,7,12,0,,19,4,1925,94
+=======
+Orny,Alps,LIA,,OLIA-02,OLIA-02,E,10,M,M,gMOR (older LIA),gMOR (older LIA),IE (old),Low,2020,53,50,3,2,0,1,,47,0,2,5,40,0,0,20,1942.5,77.5
+Orny,Alps,LIA,,OLIA-04,OLIA-04,E,20,M,M,BROCK,BROCK,MM/IE,Low,2020,25,15,10,10,0,20,,75,0,15,5,1,0,54,9,1942.5,77.5
+Orny,Alps,LIA,,OLIA-06,OLIA-06,E,15,M,M,gMOR (older LIA),gMOR (older LIA),MM,Low,2020,90,83,7,2,0,5,,8,0,1,1,6,2,0,19,1942.5,77.5
+Orny,Alps,LIA,,OLIA-07,OLIA-07,ESE,25,M,M,LiaMOR,LiaMOR,-,No,2020,88,80,8,8,0,0,,12,0,3,3,6,0,0,18,1942.5,77.5
+Orny,Alps,LIA,,OLIA-10,OLIA-10,E,20,M,M,BROCK,BROCK,IE,Low,2020,51,50,1,1,0,<1,,49,1,28,2,3,0,15,10,1942.5,77.5
+Gebroulaz,Alps, LIA ,, GLIA-02, GLIA-02,NW,5,C,C,LiaMOR,LiaMOR,no,No,2019,60,35,25,25.00%, NA , NA , NA ,0,3,20,17,0,,40,12,1925,94
+Gebroulaz,Alps, LIA ,, GLIA-03, GLIA-03,N,5,C,C,LiaMOR,LiaMOR,no,No,2019,52,50,2,2.00%, NA , NA , 0.2cm ,0,0,40,8,0,,48,24,1925,94
+Gebroulaz,Alps, LIA ,, GLIA-04, GLIA-04,E,20,M,M,LiaMOR,LiaMOR,no,No,2019,81,80,1,1.00%, + , NA , NA ,0,0,7,12,0,,19,4,1925,94
+>>>>>>> e1ab3959c288933c8c0acdb0624bd9e554720634
 Gebroulaz,Alps,ZoneC,,GBC-01,GC-01,NE,25,M,M,lMOR,lMOR,MM,Moderate,2020,60.5,60,1,100,0,0,1,0,2.5,18,19,0,,39.5,27,1925,95
 Gebroulaz,Alps,ZoneC,,GBC-02,GC-02,N,3,M,M,lMOR,lMOR,no,No,2020,84,75,9,100,0,0,1,0,1,6,9,0,,16,19,1925,95
 Gebroulaz,Alps,ZoneC,,GBC-03,GC-03,NE,5,M,M,lMOR,lMOR,MM,Low,2020,42,40,2,100,0,0,1,0,+,4,54,0,,58,29,1925,95
@@ -553,6 +564,7 @@ Broggi,Andes,,LIA,BRLIA-X2,BRLIA-X2,S,10,M,M,LiaMOR ; COLL,MIX,no,No,,93.5,93.5,
 Broggi,Andes,,LIA,BRLIA-X3,BRLIA-X3,SW,0,M,M,LiaMOR,LiaMOR,no,No,,70,40.8,29.2,100,0,0,2,6,0,5,19,,,30,9,1850,169
 Broggi,Andes,,LIA,BRLIA-X4,BRLIA-X4,S,10,M,M,LiaMOR,LiaMOR,no,No,,54,34,20,100,,,2,0,0,18,28,,,46,8,1850,169
 Broggi,Andes,,LIA,BRLIA-X5,BRLIA-X5,W,5,M,M,LiaMOR,LiaMOR,no,No,,77,52,25,100,,,2,0,0,10,13,,,23,9,1850,169
+<<<<<<< HEAD
 Glacier Blanc,Alps,LIA,LIA,C_01,C-01,,,,,,,,,2019,42,22,20,,,,,3,20,27,5,0,,,13,1850,169
 Glacier Blanc,Alps,LIA,LIA,C_02,C-02,,,,,,,,,2019,37,33,4,,,,,0,10,25,22,0,,,21,1850,169
 Glacier Blanc,Alps,LIA,LIA,C_03,C-03,,,,,,,,,2019,48,48,0,,,,,0,0,27,20,0,,,15,1850,169
@@ -571,6 +583,26 @@ Glacier Blanc,Alps,LIA,LIA,C_25,C-25,,,,,,,,,2019,42,41,1,,,,,2,30,16,10,0,,,21,
 Glacier Blanc,Alps,LIA,LIA,C_26,C-26,,,,,,,,,2019,54,50,4,,,,,0,1,4,40,0,,,19,1850,169
 Glacier Blanc,Alps,LIA,LIA,C_28,C-28,,,,,,,,,2019,71,70,1,,,,,0,6,22,0,0,,,18,1850,169
 Glacier Blanc,Alps,LIA,LIA,C_30,C-30,,,,,,,,,2019,21.75,20,1.75,,,,,15,20,35,6,0,,,12,1850,169
+=======
+Glacier Blanc,Alps,LIA,,C_01,C-01,,,,,,,,,2019,42,22,20,,,,,3,20,27,5,0,,,13,1850,169
+Glacier Blanc,Alps,LIA,,C_02,C-02,,,,,,,,,2019,37,33,4,,,,,0,10,25,22,0,,,21,1850,169
+Glacier Blanc,Alps,LIA,,C_03,C-03,,,,,,,,,2019,48,48,0,,,,,0,0,27,20,0,,,15,1850,169
+Glacier Blanc,Alps,LIA,,C_04,C-04,,,,,,,,,2019,53,48,5,,,,,0,7,7,30,0,,,18,1850,169
+Glacier Blanc,Alps,LIA,,C_08,C-08,,,,,,,,,2019,30,27,3,,,,,0,7,30,30,0,,,16,1850,169
+Glacier Blanc,Alps,LIA,,C_09,C-09,,,,,,,,,2019,1,1,0,,,,,0,3,85,11,0,,,9,1850,169
+Glacier Blanc,Alps,LIA,,C_13,C-13,,,,,,,,,2019,26,25,1,,,,,0,2,33,37,0,,,14,1850,169
+Glacier Blanc,Alps,LIA,,C_14,C-14,,,,,,,,,2019,36,21,15,,,,,0,25,14,20,0,,,15,1850,169
+Glacier Blanc,Alps,LIA,,C_16,C-16,,,,,,,,,2019,55,45,10,,,,,0,5,15,25,0,,,18,1850,169
+Glacier Blanc,Alps,LIA,,C_17,C-17,,,,,,,,,2019,46,45,1,,,,,0,3,12,35,0,,,12,1850,169
+Glacier Blanc,Alps,LIA,,C_19,C-19,,,,,,,,,2019,57,54,3,,,,,0,2,24,15,0,,,13,1850,169
+Glacier Blanc,Alps,LIA,,C_20,C-20,,,,,,,,,2019,32,32,0,,,,,0,7,45,15,0,,,14,1850,169
+Glacier Blanc,Alps,LIA,,C_21,C-21,,,,,,,,,2019,72,72,0,,,,,0,0,1,25,0,,,19,1850,169
+Glacier Blanc,Alps,LIA,,C_23,C-23,,,,,,,,,2019,44,44,0,,,,,0,1,7,40,0,,,17,1850,169
+Glacier Blanc,Alps,LIA,,C_25,C-25,,,,,,,,,2019,42,41,1,,,,,2,30,16,10,0,,,21,1850,169
+Glacier Blanc,Alps,LIA,,C_26,C-26,,,,,,,,,2019,54,50,4,,,,,0,1,4,40,0,,,19,1850,169
+Glacier Blanc,Alps,LIA,,C_28,C-28,,,,,,,,,2019,71,70,1,,,,,0,6,22,0,0,,,18,1850,169
+Glacier Blanc,Alps,LIA,,C_30,C-30,,,,,,,,,2019,21.75,20,1.75,,,,,15,20,35,6,0,,,12,1850,169
+>>>>>>> e1ab3959c288933c8c0acdb0624bd9e554720634
 Pelerins,Alps,LIA,LIA,P01,P01,NW,5,M,M,LiaMOR,LiaMOR,no,No,2019,85,80,5,3,0,2,1,0,1,7,7,0,,15,14,1850,169
 Pelerins,Alps,LIA,LIA,P03,P03,NW,25,M,M,LiaMOR,LiaMOR,no,No,2019,70,60,10,10,0,0,NA,0,0,5,25,0,,30,20,1850,169
 Pelerins,Alps,LIA,LIA,P04,P04,W,20,M,M,LiaMOR,LiaMOR,no,No,2019,55,55,0,0,0,0,0,0,0,0,45,0,,95,16,1850,169
