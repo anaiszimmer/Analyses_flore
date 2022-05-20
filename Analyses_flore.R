@@ -10,472 +10,342 @@ library(gridExtra)
 library(ggpubr)
 library(ggplot2)
 
-###Importing data from GitHub
-
-#data species = export CBNA - last used is 22 Nov 2021
-
-
-
-f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/export_478_20042022_184348.csv"
-data_sp <- read_csv(f, col_names = TRUE)
-#View(data_sp)
-
-#data plot = Anais csv plot, with geomorphology on it (for later) + colonne cleaned
-
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/AlpsAndes_plots.csv"
-Alps_plot <- read_csv(f, col_names = TRUE)
-
-#filter Alps data
- Alps_plot<-Alps_plot%>%filter(Region=="Alps")
-#View(Alps_plot)
-
- 
-### Data Cleaning
- ##Data_sp
-  #Rename column
-data_sp %>%
-  rename(
-    Plot='code_gps',
-  )->data_sp
-
-
- #Create Site variable (with shorter name than lieudit)
-data_sp<-data_sp%>%
-  mutate(Site=case_when(
-    lieudit=="Glacier Blanc" ~"Glacier Blanc",
-    lieudit=="Glacier de Gébroulaz"~"Gebroulaz", 
-    lieudit=="Glacier des Pélerins"~"Pelerins",  
-    lieudit=="Glacier de Saint-Sorlin"~"Saint Sorlin",
-    lieudit=="Glacier du Tour"~"Tour",
-    lieudit=="Glacier d'Orny"~"Orny"))
-
-unique(data_sp$Site)
-
-
-#replace ZZ releve sans vegetation by na
-# data_sp %>% mutate(nom_reconnu_ss_auteur=str_replace(nom_reconnu_ss_auteur,'ZZ relevé sans végétation','na'))->data_sp
-# data_sp %>% mutate(nom_reconnu_ss_auteur=str_replace(nom_reconnu_ss_auteur,'Zz Mousses','na'))->data_sp #je supprime les MOusses ici, dumoins pour le calcul de richesse, 
-# #car on considere que les plantes vasculaires - les mousses sont dans la SBC.
-# # data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'ZZ non rattachable','na'))->data_sp
-# data_sp %>% mutate(nom_reconnu=str_replace(nom_reconnu,'Zz Taxon à vérifier','Zz Taxon a verifier'))->data_sp
-#  
-#View(data_sp)
-
-#count plot per glacier in data_sp and Alps_plot
-
-Alps_plot%>%group_by(Site)%>%count()->plot1
-plot1
-# Site              n
-# <chr>         <int>
-# 1 Gebroulaz        69
-# 2 Glacier Blanc    93
-# 3 Orny             52
-# 4 Pelerins         70
-# 5 Saint Sorlin     55
-# 6 Tour             66
-
-data_sp%>%select(Site, Plot)%>%group_by(Site, Plot)%>%count()%>%group_by(Site)%>%count()->plot2
-plot2
-# Site              n
-# <chr>         <int>
-# 1 Gebroulaz        69
-# 2 Glacier Blanc    92 -> B3-03 dont have floristic data (not surveyed by Cedric's team??) - they only have geomorpho data
-# 3 Orny             52 
-# 4 Pelerins         70
-# 5 Saint Sorlin     55
-# 6 Tour             66
-
-#Deleting plot B3-03 with missing veg data (from AlpsPlot)
-Alps_plot<-Alps_plot%>%subset(Plot!="B3-03")
-
-
-#******************************************************************************
-# RICHNESS
-#******************************************************************************
-##Test calcul Richness index to compare with previous export files - RICHNESS INDEX - Gebroulaz - Saint Sorlin - Tour -Pelerins
-
-data_sp %>%filter(nom_reconnu_ss_auteur!="na")%>% group_by(Plot) %>% summarize(Plant_Richness=n()) %>% right_join(Alps_plot, by=c('Plot'='Plot'))->Alps_plot
-
-#  #verif data is ok : comparison between Plant_Richness and Richness (previous data calculated without CBNA export)
-# check_Richness_Cover<-Alps_plot%>%select(Plot, Richness, Plant_Richness, Plant_cover, Cover, BSC_cover)
-# 
-# check_Richness_Cover$Richness<-as.numeric(check_Richness_Cover$Richness)
-# check_Richness_Cover$Plant_Richness<-as.numeric(check_Richness_Cover$Plant_Richness)
-# check_Richness_Cover %>%mutate(dif=Richness-Plant_Richness)%>%filter(dif!="0")->check_Richness_Cover
-# #view(check_Richness_Cover)
-
-##
-#GLIAX-07 was sp was missing in previous counting -> OK
-#O63-> error in the field data (Saliz herbacea twice)
-#OLIA-02 -> Error in field data sheet (Cardus defloratus x2)->OK
-#P100/T13-B-> inversé a corriger !!!!!!!!!!!!!!
-#PC-05-> error in field data sheet (Salix herbacea twice)
-#PA-10-> error in previous doc, richness=11
-
-#after checking na values for richness are not errors, and correspond to no-vegetation plot, replace NA value by 0
-Alps_plot$Plant_Richness[is.na(Alps_plot$Plant_Richness)]<-0
-#View(Alps_plot)
-
-#******************************************************************************
-# AGE DATA & CHRONOSEQUENCE GROUPS
-#******************************************************************************
-
-### Import 'age' data (Antoine Rabatel estimates) from 'Alps_data' to data_sp
-
-Alps_plot$age<-as.numeric(Alps_plot$age)
-Alps_plot %>%
-  dplyr::select(Plot, age)%>% right_join(data_sp, by=c('Plot'='Plot'))->data_sp
-
-#View(data_sp) # NEED TO VERIFY S1-14, T99 AND P90
-
-data_sp$age<-as.numeric(data_sp$age)
-
-
-### Chronosequence groups
-
-## c(0,7,12,19,36,100,175) # corresponding to chronosequence (~ homogenized period between sites)
-data_sp$ageChronoG<-cut(data_sp$age, c(0,7,12,19,36,100,175))
-
-levels(data_sp$ageChronoG)=c("0-7 yrs","7-12 years","12-19 years", "19-36 yrs","36-100 yrs","LIA - Control")
-data_sp
-## Count data -> Balanced or unbalanced?
-data_sp%>%group_by(Site, Plot, ageChronoG)%>%count()%>%group_by(ageChronoG)%>%count()->count1
-count1 #-> unbalanced sampling
-# ageChronoG        n
-# <fct>         <int>
-# 1 0-7 yrs          49
-# 2 7-12 years       57
-# 3 12-19 years      67
-# 4 19-36 yrs        99
-# 5 36-100 yrs       47
-# 6 LIA - Control    61
-# 7 NA               24
-
-## c(0,7,13,20,30,120,175) = 7 years, 6 years, 7 years, 10years, 90 years, 55 years # to follow a balanced sampling between classes.
-data_sp$ageChronoG2<-cut(data_sp$age, c(0,7,14,21,32,120,175))
-
-levels(data_sp$ageChronoG2)=c("0-7 yrs","7-13 years","13-20 years", "20-30 yrs","30-120 yrs","LIA - Control")
-data_sp
-## Count data -> Balanced or unbalanced?
-data_sp%>%group_by(Site, Plot, ageChronoG2)%>%count()%>%group_by(ageChronoG2)%>%count()->count2
-count2
-
-# ageChronoG2       n
-# <fct>         <int>
-# 1 0-7 yrs          49
-# 2 7-13 years       73
-# 3 13-20 years      70
-# 4 20-30 yrs        74
-# 5 30-120 yrs       76
-# 6 LIA - Control    38
-# 7 NA               24
-
-
-
-#******************************************************************************
-# CREATING TRAIT DATA BASE FOR PROGLACIAL SPECIES
-#******************************************************************************
-
-# Our list of taxons
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/export_taxons_rec_478_15042022_122148.csv"
-taxons <- read_csv(f, col_names = TRUE)
-#view(taxons)
-
-##Plant Functional Trait CBNA file
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/PFT_CBNA.csv"
-PFT_CBNA <- read_csv(f, col_names = TRUE)
-#View(PFT_CBNA)
-
-#jointure
-PFT_CBNA %>%
-  dplyr::select(CD_ref, mode_dispersion_CBNA_VALS,phenologie_fecondationpollinisation_type_CBNA)%>% right_join(taxons, by=c('CD_ref'='cd_ref'))->taxon_trait
-taxon_trait %>%rename(dispersal_mode=mode_dispersion_CBNA_VALS)%>%rename(pollinisation1=phenologie_fecondationpollinisation_type_CBNA)->taxon_trait ##rename column "mode_dispersion_CBNA_VALS" to friendlier name
-#view(taxon_trait)  
-
-
-### **DISPERSAL**
-#dividing taxon trait into two tables: 1 with dispersal from previous CBNA data base, and 2 with dispersal missing
-taxon_trait$dispersal_mode[is.na(taxon_trait$dispersal_mode)]<-"NA"
-taxon_trait%>%filter(dispersal_mode!="NA")->taxon_trait1
-taxon_trait%>%filter(dispersal_mode=="NA")->taxon_trait2
-#view(taxon_trait1)
-
-## Import dispersal mode from (2) missing_CSR_dispersal to data_sp
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/missing_CSR_dispersal.csv"
-CSR_dissemi_Pollini <- read_csv(f, col_names = TRUE)
-#view(CSR_dispersal_2)
-CSR_dissemi_Pollini %>%
-  dplyr::select(CD_REF, dissemination)%>% right_join(taxon_trait2, by=c('CD_REF'='CD_ref'))->taxon_trait2
-view(taxon_trait2)
-
-taxon_trait2 %>%select(-dispersal_mode)%>%rename(dispersal_mode=dissemination)->taxon_trait2
-
-#merge data_trait1 and data Trait2
-TRAITS1<-merge(taxon_trait1,taxon_trait2, all=TRUE)
-unique(TRAITS1$dispersal_mode)
-
-TRAITS1%>%mutate(cd_ref=coalesce(CD_ref, CD_REF))%>%unique%>%select(-CD_ref,-CD_REF)->TRAITS1
-TRAITS1%>%rename(dissemination_compil=dispersal_mode)->TRAITS1 #changement de nom pour comparaison donnees avec base JULVE 
-#(dispersion_compil = donnees CBNA + base JULVE pour donnees manquantes)
-#view(TRAITS1)
-
-
-
-### **POLLINISATION**
-
-#dividing TRAITS1 into two tables: 1 with dissemination from previous CBNA data base, and 2 with pollinisation missing
-TRAITS1$pollinisation1[is.na(TRAITS1$pollinisation1)]<-"NA"
-TRAITS1%>%filter(pollinisation1!="NA")->TRAITS1a
-TRAITS1%>%filter(pollinisation1=="NA")->TRAITS1b
-#view(TRAITS1a)
-
-# import for completed doc by Sophie from Julve
-CSR_dissemi_Pollini %>%
-  dplyr::select(CD_REF, pollinisation)%>% right_join(TRAITS1b, by=c('CD_REF'='cd_ref'))->TRAITS1b
-#view(TRAITS1b)
-
-TRAITS1b %>%select(-pollinisation1)%>%rename(pollinisation1=pollinisation)->TRAITS1b
-
-#merge data_trait1 and data Trait2
-TRAITS<-merge(TRAITS1a,TRAITS1b, all=TRUE)
-unique(TRAITS$pollinisation1)
-
-TRAITS%>%mutate(cd_ref=coalesce(cd_ref, CD_REF))%>%unique%>%select(-CD_REF)->TRAITS
-TRAITS%>%rename(pollinisation_compil=pollinisation1)->TRAITS #changement de nom pour comparaison donnees avec base JULVE 
-#(pollinisation_compil = donnees CBNA + base JULVE pour donnees manquantes)
-#view(TRAITS)
-
-
-
-### **CSR STRATEGIES**
-
-#Join with CSR_CBNA_SA_CSR (work CBNA specialist)
-
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/CSR_CBNA_extra.csv"
-SA_CSR<- read_csv(f, col_names = TRUE)
-#view(SA_CSR)
-
-SA_CSR %>%select(CD_REF7, SA_CSR)%>% right_join(TRAITS, by=c('CD_REF7'='cd_ref'))%>%unique->TRAITS
-#view(TRAITS)#329 entries (Il doit y avoir deux/trois doublons dans la donnees SA_CSR)
-
-
-TRAITS %>%select(-SA_CSR)%>%unique%>%count() #326 entries -> doublons avec deux valeurs de CSR differentes pour le meme taxon. A RECHERCHER !!!
-TRAITS%>%group_by(cd_ref)%>%summarize(count_CDREF=n())->TRAITS_check
-#view(TRAITS_check)
-# duplicates are:
-# -81179, Alchemilla transiens (Buser) Buser, 1898 - CSS and CCS -> Le taxon se repete 4 fois dans SA_CSR (3 css et 1 ccs)-> modifier pour CSS
-# -133087, Cerastium arvense subsp. strictum Gaudin, 1828 - CRS and CCS (Les deux strategies sont presente une fois pour exactement le meme taxon) ????
-# -83528, Arctostaphylos uva-ursi (L.) Spreng., 1825 - same problem
-
-TRAITS$SA_CSR[TRAITS$CD_REF7=="81179"]<-"css"
-TRAITS%>%unique ->TRAITS
-#view(TRAITS) #328 entries
-
-
-
-
-### **BASEFLOR JULVE**
-
-## Jointure avec la liste des 322 taxons concaténée avec les données de Baseflor 32 taxons A COMPLETER
-
-
-f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/files_PFT/Baseflor_taxon.csv"
-
-baseflor<-read_csv(f, col_names = TRUE)
-#View(baseflor)
-
-
-baseflor %>%select(cd_ref,
-                   nom_reconnu_ss_auteur,
-                   CHOROLOGIE,
-                   sexualité,
-                   pollinisation,
-                   inflorescence,
-                   fruit,
-                   dissémination,
-                   TYPE_BIOLOGIQUE, FORMATION_VEGETALE,
-                   CARACT_ECOLOG_HABITAT_OPTI,
-                   INDICATION_PHYTOSOCIOLOGIQUE_CARACTERISTIQUE)%>%right_join(TRAITS, by=c('cd_ref'='CD_REF7'))->TRAITS
-#view(TRAITS)
-
-#write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Analyses_flore/data\\TRAITS_notcomplete.csv")
-
-
-#Concatenation des deux bases de données de dissemination
-
-# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore (et épizoochore ?)','épizoochore'))->TRAITS
-# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore(et épizoochore ?)','épizoochore'))->TRAITS
-# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore ?','anémochore'))->TRAITS
-# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'anémochore et dyszoochore','anémochore'))->TRAITS
-# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'autochore ?','barochore'))->TRAITS
-# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'autochore ? (et dyszoochore)','mymécochore'))->TRAITS # A VERIFIER
-# TRAITS %>% mutate(dispersal_mode=str_replace(dispersal_mode,'némochore et dyszoochore','anémochore'))->TRAITS
-# 
-# 
-# TRAITS$dispersal_mode[TRAITS$cd_ref=="90863"]<-"barochore"
-# TRAITS$dispersal_mode[TRAITS$cd_ref=="997256"]<-"barochore"
-# TRAITS$dispersal_mode[TRAITS$cd_ref=="125238"]<-"autochore"
-
-
-TRAITS%>%select(cd_ref,nom_reconnu_ss_auteur, dissemination_compil,dissémination, pollinisation_compil,pollinisation, SA_CSR)->TRAITS_comparison
-#view(TRAITS_comparison)
-
-#write.csv(TRAITS,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\TRAITS_comparison.csv")
 
 
 #**********************************************************************************************************
 ### PLOT DISPERSAL 
+#*********************************************************************************************************
+
+#reloading the save csv on GitHub
+f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/Data_sp_All.csv"
+spe_all <- read_csv(f, col_names = TRUE)
+#view(spe_all)
 
 
-TRAITS %>%
-  dplyr::select(CD_ref, dispersal_mode)%>% right_join(data_sp, by=c('CD_ref'='cd_ref'), na.rm=TRUE)->data_sp
+
+#completing age -> need to be verified and added in csv doc
+
+spe_all$age[spe_all$Plot=="P90"]<-"7" #band old =2008-2018 -> median=2013->2020-2013=7
+#Alps_plot$age[Alps_plot$Plot=="B3-03"]<-""
+spe_all$age[spe_all$Plot=="S1-14"]<-"9.5" #~same age as S1-19 (9.5 years)
+spe_all$age[spe_all$Plot=="T99"]<-"7" ##band old =2008-2018 -> median=2013->2020-2013=7
+spe_all$age[spe_all$Plot=="OLIA-01"]<-"77.5" #same age than other LIA plots
+spe_all$age[spe_all$Plot=="OLIA-09"]<-"77.5"
+spe_all$age[spe_all$Plot=="OLIA-05"]<-"77.5"
 
 
-view(data_sp)
+spe_dispersal<-spe_all%>%filter(age!="NA")%>%select(-ageChronoG2)#deleting ageChronoG2 column because incomplete since new ages added
+unique(spe_dispersal$Plot)#386 plot
 
-data_sp$dispersal_mode<-factor(data_sp$dispersal_mode, levels = c("barochore","anemochore","endozoochoe", "epizoochore", "hydrochore", "zoochore","NA"))
+view(spe_dispersal)
+## Updating chronosequence groups
 
-Dplot<-ggplot(filter(data_sp, age!="NA"), aes(dispersal_mode, ageChronoG2), na.rm=TRUE)+
+## c(0,7,13,20,30,120,175) = 7 years, 6 years, 7 years, 10years, 90 years, 55 years # to follow a balanced sampling between classes.
+spe_dispersal$age<-as.numeric(spe_dispersal$age)
+spe_dispersal$ageChronoG2<-cut(spe_dispersal$age, c(0,7,14,21,32,120,175))
+
+levels(spe_dispersal$ageChronoG2)=c("0-7 yrs","7-13 years","13-20 years", "20-30 yrs","30-120 yrs","LIA - Control")
+spe_dispersal
+## Count data -> Balanced or unbalanced?
+spe_dispersal%>%group_by(Site, Plot, ageChronoG2)%>%count()%>%group_by(ageChronoG2)%>%count()->count2
+count2
+
+
+
+
+
+TRAITS_modif2 %>%
+  dplyr::select(cd_ref, dissemination_compil)%>% right_join(spe_dispersal, by=c('cd_ref'='cd_ref'), na.rm=TRUE)->spe_dispersal
+
+spe_dispersal<-spe_dispersal%>%rename(dispersal_mode=dissemination_compil)
+
+unique(spe_dispersal$dispersal_mode)
+
+view(spe_dispersal)
+spe_dispersal$dispersal_mode<-factor(spe_dispersal$dispersal_mode, levels = c("anemochore","barochore","autochore", "zoochore", "anemochore & zoochore"))
+
+Dplot<-ggplot(filter(spe_dispersal, age!="NA"), aes(dispersal_mode, ageChronoG2), na.rm=TRUE)+
   geom_jitter(aes(color=dispersal_mode),size=1)+
-  labs(title="Dispersal mode distribution - Sites: Tour, Pelerins, Gebroulaz, Saint Sorlin, Glacier Blanc",
-       subtitle = paste("n = ", nrow(data_sp), "Sp"),
+  labs(title="Dispersal mode distribution - Sites: Orny, Tour, Pelerins, 
+       Gebroulaz, Saint Sorlin, Glacier Blanc",
+       subtitle = paste("n = ", nrow(spe_dispersal), "Sp"),
        x="", y="Age Groups")+
   theme(plot.title = element_text(size=11))
 Dplot
 
-Dplot<-ggplot(filter(data_sp, age!="NA", dispersal_mode!="NA"), aes(dispersal_mode, ageChronoG2), na.rm=TRUE)+
+Dplot<-ggplot(filter(spe_dispersal, age!="NA", dispersal_mode!="NA"), aes(dispersal_mode, ageChronoG2), na.rm=TRUE)+
   geom_jitter(aes(color=dispersal_mode),size=2)+
-  labs(title="Dispersal mode distribution - Sites: Tour, Pelerins, Gebroulaz, Saint Sorlin", 
-       subtitle = paste("n = ", nrow(filter(data_sp, dispersal.mode!="NA")), "Sp"),
+  labs(title="Dispersal mode distribution - Sites: Orny, Tour, Pelerins, Gebroulaz, Saint Sorlin, Glacier Blanc", 
+       subtitle = paste("n = ", nrow(filter(spe_dispersal, dispersal_mode!="NA")), "Sp"),
        x="", y="Age Groups")+
   scale_color_brewer(palette="Dark2")
 Dplot
 
 
-DispAge <- data_sp %>%
+DispAge <- spe_dispersal %>%
   count(ageChronoG2, dispersal_mode) %>%
   group_by(ageChronoG2) %>% #change to `group_by(Genotypes) %>%` for alternative approach
   mutate(prop = n / sum(n))
+DispAge
+
+
 
 ggplot(data = DispAge, aes(ageChronoG2, prop, fill = dispersal_mode)) + 
-  geom_bar(stat = "identity", position = "dodge")
+  geom_bar(stat = "identity", position = "dodge")+
+  labs(title="Proportion Dispersal mode - All Sites")+
+  coord_cartesian(ylim=c(0,1))
+
+
+
+DispProportion <- spe_dispersal %>%
+  count(ageChronoG2, dispersal_mode, Plot, Site) %>%
+  group_by(ageChronoG2, Plot) %>% #change to `group_by(Genotypes) %>%` for alternative approach
+  mutate(prop = n / sum(n))
+DispProportion
+
+
+##BOXPLOT
+
+DispProportion$Site<-factor(DispProportion$Site,levels = c("Glacier Blanc","Saint Sorlin","Gebroulaz","Pelerins","Tour","Orny"))
+ unique(DispProportion$Site)
+
+
+anemo<-ggplot(filter(DispProportion,dispersal_mode=="anemochore"), aes(x =ageChronoG2, y =prop, color=Site)) + 
+  #geom_point(aes(color=Site), size=0.4)+
+  geom_boxplot(aes(fill=Site), alpha=0.4)+
+  scale_fill_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  scale_color_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual",title="Anemochory")+
+  coord_cartesian(ylim=c(0,1))
+  #scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+anemo
+
+anemoAll<-ggplot(filter(DispProportion,dispersal_mode=="anemochore"), aes(x =ageChronoG2, y =prop)) + 
+  geom_point(size=0.8)+
+  geom_boxplot(alpha=0.4, fill="blue4", alpha=0.4)+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual",title="Anemochory - All sites")+
+  coord_cartesian(ylim=c(0,1))
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+anemoAll
+
+
+baro<-ggplot(filter(DispProportion,dispersal_mode=="barochore"), aes(x =ageChronoG2, y =prop, color=Site)) + 
+  #geom_point(aes(color=Site), size=0.4)+
+  geom_boxplot(aes(fill=Site), alpha=0.4)+
+  scale_fill_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  scale_color_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual",title="Barochory")+
+  coord_cartesian(ylim=c(0,1))
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+baro
+
+baroAll<-ggplot(filter(DispProportion,dispersal_mode=="barochore"), aes(x =ageChronoG2, y =prop)) + 
+  geom_point(size=0.8)+
+  geom_boxplot(alpha=0.4, fill="orange3", alpha=0.4)+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual",title="Barochory - All sites")+
+  coord_cartesian(ylim=c(0,1))
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+baroAll
+
+auto<-ggplot(filter(DispProportion,dispersal_mode=="autochore"), aes(x =ageChronoG2, y =prop, color=Site)) + 
+  #geom_point(aes(color=Site), size=0.4)+
+  geom_boxplot(aes(fill=Site), alpha=0.4)+
+  scale_fill_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  scale_color_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual", title="Autochory")+
+  coord_cartesian(ylim=c(0,1))
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+auto
+
+autoAll<-ggplot(filter(DispProportion,dispersal_mode=="autochore"), aes(x =ageChronoG2, y =prop)) + 
+  geom_point(size=0.8)+
+  geom_boxplot(alpha=0.4, fill="palegreen4", alpha=0.4)+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual",title="Autochory - All sites")+
+  coord_cartesian(ylim=c(0,1))
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+autoAll
+
+zoo<-ggplot(filter(DispProportion,dispersal_mode=="zoochore"), aes(x =ageChronoG2, y =prop, color=Site)) + 
+  #geom_point(aes(color=Site), size=0.4)+
+  geom_boxplot(aes(fill=Site), alpha=0.4)+
+  scale_fill_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  scale_color_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual", title = "zoochorie")+
+  coord_cartesian(ylim=c(0,1))
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+zoo
+
+zooAll<-ggplot(filter(DispProportion,dispersal_mode=="zoochore"), aes(x =ageChronoG2, y =prop)) + 
+  geom_point(size=0.8)+
+  geom_boxplot(alpha=0.4, fill="orchid4", alpha=0.4)+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual",title="Zoochory - All sites")+
+  coord_cartesian(ylim=c(0,1))
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+zooAll
+
+
+## Linear regression _Age proportion of dispersion mode
+DispProportion2 <- spe_dispersal %>%
+  count(age, dispersal_mode, Plot, Site) %>%
+  group_by(Plot) %>% #change to `group_by(Genotypes) %>%` for alternative approach
+  mutate(prop = n / sum(n))
+view(DispProportion2)
+
+anemoR<-ggplot(filter(DispProportion2,dispersal_mode=="anemochore"), aes(x =age, y =prop, color=Site)) + 
+  geom_point(aes(color=Site), size=1)+
+  scale_fill_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  scale_color_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual",title="Anemochory")+
+  coord_cartesian(ylim=c(0,1))+
+  geom_smooth(method='lm',se=FALSE, fullrange=TRUE,formula = y ~ x)+
+  stat_cor(aes(color=Site),method ="pearson", label.x =35, size=3)
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+anemoR
+
+baroR<-ggplot(filter(DispProportion2,dispersal_mode=="barochore"), aes(x =age, y =prop, color=Site)) + 
+  geom_point(aes(color=Site), size=1)+
+  scale_fill_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  scale_color_manual(values=c('blue2','deepskyblue','magenta3','darkgreen','green2','darkolivegreen2'))+
+  #geom_jitter(color="black", size=0.4, alpha=0.9)+
+  theme_bw(base_size = 10)+
+  labs(x="",y="Proportion of individual",title="Barochory")+
+  coord_cartesian(ylim=c(0,1))+
+  geom_smooth(method='lm',se=FALSE, fullrange=TRUE,formula = y ~ x)+
+  stat_cor(aes(color=Site),method ="pearson", label.x =140, size=3)
+#scale_y_continuous(breaks=c(0,25,50,75,100,200),trans=squish_trans(c(100,Inf)))
+#geom_hline(yintercept=5, linetype="dashed", color="black")
+baroR
+
 
 
 
 #******************************************************************************
-# test RLQ ANALYSIS
+# RLQ ANALYSIS
 #******************************************************************************
 
 # Preparation de la base de donnees
-
-view(data_sp)
 
 library(dplyr)
 library(tidyr)
 library(stringr)
 
-#THIS DOES NOT WORK
-# #duplicating the comm_taxon column
-# data_sp$comm_taxon1<-data_sp$comm_taxon
-# 
-# data_sp_ok<-data_sp%>%separate(comm_taxon1, c('Cover_sp', 'Height_sp','Facilitation', 'Assoc_BSC', 'Compet', 'Nurse_rock', 'Reprod', 'Vielle_Repro_or_Comment','Comment'),";")
-# 
-# #write.csv(data_sp_ok,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp\\data_sp_cleaning_comm_taxon.csv")
-
-
-
-
-#DO NOT MODIFY OR RUN
-Gebroulaz<-filter(data_sp, Site=="Gebroulaz")
-#write.csv(Gebroulaz,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Gebroulaz_comm_taxon.csv")
-Sorlin<-filter(data_sp, Site=="Saint Sorlin")
-#write.csv(Sorlin,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Sorlin_comm_taxon.csv")
-Pelerins<-filter(data_sp, Site=="Pelerins")
-#write.csv(Pelerins,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Pelerins_comm_taxon.csv")
-Tour<-filter(data_sp, Site=="Tour")
-#write.csv(Tour,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Tour_comm_taxon.csv")
-Orny<-filter(data_sp, Site=="Orny")
-#write.csv(Orny,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Orny_comm_taxon.csv")
-Blanc<-filter(data_sp, Site=="Glacier Blanc")
-#write.csv(Blanc,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon\\Blanc_comm_taxon.csv")
-
-
-#Merging the 6 files
-Gebroulaz_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Gebroulaz_comm_taxon.csv")
-Sorlin_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Sorlin_comm_taxon.csv")
-Pelerins_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Pelerins_comm_taxon.csv")
-Tour_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Tour_comm_taxon.csv")
-Orny_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Orny_comm_taxon.csv")
-Blanc_comm_taxon <- read_csv("C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Plot_Sp/cleaning_comm_taxon/Blanc_comm_taxon.csv")
-
-
-Data_sp_1<-merge(Gebroulaz_comm_taxon,Sorlin_comm_taxon,all=TRUE)
-
-Data_sp_2<-merge(Data_sp_1,Pelerins_comm_taxon,all=TRUE)
-Data_sp_3<-merge(Data_sp_2,Tour_comm_taxon,all=TRUE)
-Data_sp_4<-merge(Data_sp_3,Orny_comm_taxon,all=TRUE)
-Data_sp_All<-merge(Data_sp_4,Blanc_comm_taxon,all=TRUE)
-#view(Data_sp_All)
-
-#write.csv(Data_sp_All,"C:/ECOLOGICAL CHANGES IN ALPINE ECOSYSTEMS/RESEARCH-DISSERTATION/ANALYSES_PS/CHRONOSEQUENCES/Analyses_flore/data\\Data_sp_All.csv")
 
 
 ##### RLQ analysis
 
+Alps_plot2<-Alps_plot
+
 ### R matrix - environment matrix -env
 ##cleaning data from Alps_plot
 #slope Orientation
-Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'-','0'))->Alps_plot 
-Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'110','ES'))->Alps_plot 
-Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'150','SE'))->Alps_plot 
-Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'180','S'))->Alps_plot 
-Alps_plot %>% mutate(SlopeD=str_replace(SlopeD,'-','0'))->Alps_plot 
-Alps_plot %>% mutate(SlopeD=str_replace(SlopeD,'<5','3'))->Alps_plot 
-Alps_plot %>% mutate(SlopeD=str_replace(SlopeD,'0-50','30'))->Alps_plot 
-#View(Alps_plot)
+Alps_plot2 %>% mutate(SlopeO=str_replace(SlopeO,'-','0'))->Alps_plot2 
+# Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'110','ES'))->Alps_plot 
+# Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'150','SE'))->Alps_plot 
+# Alps_plot %>% mutate(SlopeO=str_replace(SlopeO,'180','S'))->Alps_plot 
+Alps_plot2 %>% mutate(SlopeD=str_replace(SlopeD,'-','0'))->Alps_plot2 
+Alps_plot2 %>% mutate(SlopeD=str_replace(SlopeD,'<5','3'))->Alps_plot2 
+Alps_plot2 %>% mutate(SlopeD=str_replace(SlopeD,'0-50','30'))->Alps_plot2
+#View(Alps_plot2)
 
 
 #completing age -> need to be verified and added in csv doc
 
-Alps_plot$age[Alps_plot$Plot=="P90"]<-"7" #band old =2008-2018 -> median=2013->2020-2013=7
+Alps_plot2$age[Alps_plot2$Plot=="P90"]<-"7" #band old =2008-2018 -> median=2013->2020-2013=7
 #Alps_plot$age[Alps_plot$Plot=="B3-03"]<-""
-Alps_plot$age[Alps_plot$Plot=="S1-14"]<-"9.5" #~same age as S1-19 (9.5 years)
-Alps_plot$age[Alps_plot$Plot=="T99"]<-"7" ##band old =2008-2018 -> median=2013->2020-2013=7
-Alps_plot$age[Alps_plot$Plot=="OLIA-01"]<-"77.5" #same age than other LIA plots
-Alps_plot$age[Alps_plot$Plot=="OLIA-09"]<-"77.5"
-Alps_plot$age[Alps_plot$Plot=="OLIA-05"]<-"77.5"
+Alps_plot2$age[Alps_plot2$Plot=="S1-14"]<-"9.5" #~same age as S1-19 (9.5 years)
+Alps_plot2$age[Alps_plot2$Plot=="T99"]<-"7" ##band old =2008-2018 -> median=2013->2020-2013=7
+Alps_plot2$age[Alps_plot2$Plot=="OLIA-01"]<-"77.5" #same age than other LIA plots
+Alps_plot2$age[Alps_plot2$Plot=="OLIA-09"]<-"77.5"
+Alps_plot2$age[Alps_plot2$Plot=="OLIA-05"]<-"77.5"
 
 #data geoA missing or wrong for PA-03
-Alps_plot$GeoA[Alps_plot$Plot=="PA-03"]<-"Moderate"
+Alps_plot2$GeoA[Alps_plot2$Plot=="PA-03"]<-"Moderate"
 #data Sand missing for T45-> error na =0
-Alps_plot$Sand[Alps_plot$Plot=="T45"]<-"0"
+Alps_plot2$Sand[Alps_plot2$Plot=="T45"]<-"0"
 
-R_env<-Alps_plot%>%
-  filter(Site!="Glacier Blanc")%>%filter(Plant_cover!=0)%>%   #remove glacier Blanc data because geomorpho highly incomplete
-  select(Plot,age, SlopeD, Sand, GeoA,Position_corr,SlopeO, Rock)%>%as.data.frame()#SlopeO,Landform_corr, removed
+#data gravel to correct - and +
+Alps_plot2$Gravel[Alps_plot2$Gravel=="-"]<-"0"
+Alps_plot2$Gravel[Alps_plot2$Gravel=="+"]<-"0.5"
+
+
+#transforming GeoA in numeric variable
+
+Alps_plot2 %>% mutate(GeoA=str_replace(GeoA,'No','0'))->Alps_plot2
+Alps_plot2 %>% mutate(GeoA=str_replace(GeoA,'Low','1'))->Alps_plot2 
+Alps_plot2 %>% mutate(GeoA=str_replace(GeoA,'Moderate','2'))->Alps_plot2 
+Alps_plot2 %>% mutate(GeoA=str_replace(GeoA,'High','3'))->Alps_plot2 
+
+## Modifying slope orientation class to slope orientation in degree -> Quantitative variable
+unique(Alps_plot2$SlopeO)%>%as.factor()
+  #Error in data orientation for S1-01 (WSE ->NNE )
+Alps_plot2$SlopeO[Alps_plot2$Plot=="S1-01"]<-"NNE"
+  #right join with orientation class-Orientation degree csv.
+f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/data_enviro/Classe_pente.csv"
+classe_pente<-read_csv(f, col_names = TRUE)
+
+
+
+classe_pente %>%select(Slope_class,SlopeO_class)%>%right_join(Alps_plot2, by=c('Slope_class'='SlopeO'))->Alps_plot2
+#view(Alps_plot)
+#unique(Alps_plot$SlopeO_class)%>%as.factor()
+
+#view(Alps_plot2)
+
+##selecting LIA data
+#Alps_plot2$Band[is.na(Alps_plot2$Band)]<-"NA"
+
+R_env<-Alps_plot2%>%
+  filter(Site!="Glacier Blanc")%>%#remove glacier Blanc data because geomorpho highly incomplete
+  filter(Plant_cover!=0)%>%   
+  #filter(Band!="LIA")%>% #remove LIA data
+  #select(Plot,age, SlopeD, Sand, GeoA,Position_corr,SlopeO_class, Landform_corr, Rock)%>%as.data.frame()#Landform_corr, removed
+  select(Plot,age, slope, Sand,Gravel, GeoA,expo, Rock,TPI, alti)%>%as.data.frame() #Position_corr
 #need to be a data frame to set row names (Setting row names on a tibble is deprecated.)
-R_env$SlopeO<-as.factor(R_env$SlopeO)
-R_env$SlopeD<-as.numeric(R_env$SlopeD)
-R_env$GeoA<-as.factor(R_env$GeoA)
+#view(R_env)
+#str(R_env)
+
+unique(R_env$Plot)
+
+#R_env$SlopeD<-as.numeric(R_env$SlopeD)
+#R_env$GeoA<-as.factor(R_env$GeoA)
+R_env$GeoA<-as.numeric(R_env$GeoA)
 R_env$Position_corr<-as.factor(R_env$Position_corr)
-R_env$SlopeO<-as.factor(R_env$SlopeO)
+#R_env$SlopeO_class<-as.numeric(R_env$SlopeO_class)
 R_env$Landform_corr<-as.factor(R_env$Landform_corr)
 R_env$age<-as.numeric(R_env$age)
 R_env$Sand<-as.numeric(R_env$Sand)
+R_env$Gravel<-as.numeric(R_env$Gravel)
 
 #sapply(R_env,class)
-unique(R_env$Position_corr)
+#unique(R_env$Position_corr)
 
-row.names(R_env)<-R_env$Plot
-R_env<-R_env%>%select(-Plot)
-
-view(R_env)
-
-#Import alti calc from export CBNA (data_sp) to env
-# data_sp %>%
-#   dplyr::select(Plot, alti_calc)%>%unique()%>% right_join(env, by=c('Plot'='Plot'), na.rm=TRUE)->env
-# View(env)
- 
 
 ### Q matrix - species by trait matrix - traits
 
@@ -483,56 +353,85 @@ view(R_env)
 # f<-"https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/TRAITS_notcomplete.csv"
 # traits<-read_csv(f, col_names = TRUE)
 
-traits<-TRAITS
+traits<-TRAITS_modif2
 #problem des taxons qui se repetent
 # -133087, Cerastium arvense subsp. strictum Gaudin, 1828 - CRS and CCS (Les deux strategies sont presente une fois pour exactement le meme taxon) ????
 # -83528, Arctostaphylos uva-ursi (L.) Spreng., 1825 - same problem
 # pour le moment 133087=CRS et 83528=CSS
 
+#view(traits)
+
 traits$SA_CSR[traits$cd_ref=="133087"]<-"crs"
 traits$SA_CSR[traits$cd_ref=="83528"]<-"css"
 
 #regroupement mode de dispersion -> zoochore
-traits %>% mutate(dissémination=str_replace(dissémination,"épizoochore",'zoochore'))->traits
-traits %>% mutate(dissémination=str_replace(dissémination,"endozoochore",'zoochore'))->traits
-traits %>% mutate(dissémination=str_replace(dissémination,"myrmécochore",'zoochore'))->traits
+# traits %>% mutate(dissémination=str_replace(dissémination,"épizoochore",'zoochore'))->traits
+# traits %>% mutate(dissémination=str_replace(dissémination,"endozoochore",'zoochore'))->traits
+# traits %>% mutate(dissémination=str_replace(dissémination,"myrmécochore",'zoochore'))->traits
 
-unique(traits$dissémination)
+#unique(traits$dissémination)
 
-traits%>%unique()%>%filter(nom_reconnu_ss_auteur!="na")%>%
+###Donnees traits dispo
+#famille =324 = all taxons
+# dissemination compil = 322
+#pollinisation_compil = 320
+#sexualite = 308
+#chorologie = 308
+#formation vegetale= 308
+#fruit =294
+#inflorescence = 291
+#SA_CR = 226
+
+traits%>%filter(nom_reconnu_ss_auteur!="na")%>%
   select(cd_ref,
+         #famille,
          nom_reconnu_ss_auteur, 
-         dissémination,
-         pollinisation,
-         sexualité,
-         CHOROLOGIE,
-         FORMATION_VEGETALE,
-         SA_CSR)%>%
-  drop_na()->Q_traits
+         dissemination_compil,
+         SLA, 
+         SEEDM,
+        # LDMCp,
+         #sexualite,
+         #CHOROLOGIE,
+         #SA_CSR,
+         #FORMATION_VEGETALE,
+         pollinisation_compil)%>%
+           unique()->Q_traits
+view(Q_traits)
+Q_traits%>%drop_na()->Q_traits
 
 #add new column noNA
 Q_traits$noNA<-1
 
-view(Q_traits) #row=222
-unique(Q_traits$cd_ref)#222 -> taxon present seulement au glacier Blanc, dont on a les traits complet??
+view(Q_traits) #row=224 - 306 -120 especes
+unique(Q_traits$cd_ref)#306
+
+
 
 ### L matrix - species matrix -spe
 #reloading the save csv on GitHub
 f <- "https://raw.githubusercontent.com/anaiszimmer/Analyses_flore/main/data/Data_sp_All.csv"
 spe_all <- read_csv(f, col_names = TRUE)
-view(spe_all)
+#view(spe_all)
 
-#removing data from glacier Blanc
-spe<-spe_all%>%filter(Site!="Glacier Blanc")
+## Selection of data without LIA
+#import Band data from Alps_plot2
+#Alps_plot2_noLIA<-Alps_plot2 %>%filter(Band!="LIA")
+#view(Alps_plot2_noLIA)
+#Alps_plot2%>%select(Plot, Band)%>% right_join(spe_all, by=c('Plot'='Plot'))->spe_all
+
+
+#removing data from glacier Blanc and from LIA
+spe<-spe_all%>%filter(Site!="Glacier Blanc")#%>%filter(Band!="LIA")
 
 #selecting species with trait data complete
 Q_traits %>%select(nom_reconnu_ss_auteur, noNA)%>% right_join(spe, by=c('nom_reconnu_ss_auteur'='nom_reconnu_ss_auteur'))->spe
 spe<-spe%>%filter(noNA==1)
-view(spe)
+#view(spe)
 
-list_spe<-spe$nom_reconnu_ss_auteur%>%as_tibble()%>%rename(nom_reconnu_ss_auteur='value')%>%unique()#192 taxons
+list_spe<-spe$nom_reconnu_ss_auteur%>%as_tibble()%>%rename(nom_reconnu_ss_auteur='value')%>%unique()#194 taxons - 181 taxons sans LIA
 list_spe$sp_ok<-1
-view(list_spe)
+#view(list_spe)
+
 
 
 #selecting taxon present in list_spe in Q_traits to create Q_traits_ok
@@ -540,13 +439,15 @@ view(list_spe)
 list_spe %>%select(nom_reconnu_ss_auteur, sp_ok)%>% 
       right_join(Q_traits, by=c('nom_reconnu_ss_auteur'='nom_reconnu_ss_auteur'))%>%
       as.data.frame()->Q_traits
+#view(Q_traits)
 Q_traits_ok<-Q_traits%>%filter(sp_ok==1)%>%select(-sp_ok,-cd_ref,-noNA)
-Q_traits_ok$sexualité<-as.factor(Q_traits_ok$sexualité)
-Q_traits_ok$pollinisation<-as.factor(Q_traits_ok$pollinisation)
-Q_traits_ok$dissémination<-as.factor(Q_traits_ok$dissémination)
+Q_traits_ok$sexualite<-as.factor(Q_traits_ok$sexualite)
+Q_traits_ok$pollinisation_compil<-as.factor(Q_traits_ok$pollinisation_compil)
+Q_traits_ok$dissemination_compil<-as.factor(Q_traits_ok$dissemination_compil)
 Q_traits_ok$CHOROLOGIE<-as.factor(Q_traits_ok$CHOROLOGIE)
 Q_traits_ok$FORMATION_VEGETALE<-as.factor(Q_traits_ok$FORMATION_VEGETALE)
 Q_traits_ok$SA_CSR<-as.factor(Q_traits_ok$SA_CSR)
+Q_traits_ok$famille<-as.factor(Q_traits_ok$famille)
 
 #sapply(Q_traits_ok,class)
 
@@ -558,27 +459,70 @@ view(Q_traits_ok)
 
 #creating matrix
 
-unique(spe$nom_reconnu_ss_auteur)#192 ->OK
+unique(spe$nom_reconnu_ss_auteur)#194
 
+?dcast()
+str(spe)
+
+#missing recouvrement data for P98 (3674761) and T56 (36747674) in CBNA data base
+spe$recouvrement_sp[spe$id_observation=="36747613"]<-"x" 
+spe$recouvrement_sp[spe$id_observation=="36747674"]<-"12"
+
+spe$recouvrement_sp[spe$recouvrement_sp=="+"]<-"0.1"
+spe$recouvrement_sp[spe$recouvrement_sp=="x"]<-"0.1"
+spe$recouvrement_sp[spe$recouvrement_sp=="r"]<-"0.1"
+
+spe$recouvrement_sp<-as.numeric(spe$recouvrement_sp)
+view(spe)
+#spe<-data.frame(spe)
+
+spe<-spe%>%select(Plot, nom_reconnu_ss_auteur, recouvrement_sp)
+
+unique(spe$Plot)#274
+
+##check plot missing between R_env (282) and spe (174)
+# plot_check<-spe%>%select(Plot, nom_reconnu_ss_auteur)%>%right_join(R_env, by=c("Plot"="Plot"))
+# view(plot_check) #-> 8 plot that have no data for LDMC or SLA -> need to re-ajuste R_env
+# view(R_env)
 
 L_spe<-spe%>%data.table::dcast(Plot~nom_reconnu_ss_auteur,value.var= 'recouvrement_sp')
+L_spe[is.na(L_spe)] <- 0
+
 row.names(L_spe)<-L_spe$Plot
 L_spe<-L_spe%>%select(-Plot)
 
 #names(spe) <- make.names(names(spe), unique=TRUE)
 #filter(nom_reconnu_ss_auteur !="na")
 view(L_spe)
-sapply(spe,class)
+sapply(L_spe,class)
 
 
-#apply(spe, 2, function(x) any(is.na(x)))
+
+
+#*** RE- AJUSTING R_env
+
+#list of plot present in spe
+#selecting plot with species and trait data complete
+
+spe$noNA<-1
+spe %>%select(Plot, noNA)%>%unique()%>% right_join(R_env, by=c('Plot'='Plot'))->R_env
+R_env<-R_env%>%filter(noNA==1)%>%as.data.frame()
+#view(R_env)#274
+
+#R_env matrix for RQL
+row.names(R_env)<-R_env$Plot
+R_env<-R_env%>%select(-Plot, -noNA)
+
+view(R_env) #282 (without Blanc) or 235 (without Blanc and LIA) ; or 274 if using SLA and LDMC trait data
+
+
 
 ## Separate analysis of each matrix
 library(ade4)
 
-?dudi.coa
-?dudi.hillsmith
-sapply(env,class)
+#?dudi.coa
+#?dudi.hillsmith
+sapply(R_env,class)
 
 dim(L_spe)
 dim(R_env)
@@ -611,14 +555,27 @@ summary(rlq)
 par(mfrow = c(1, 3))
 par(mfrow = c(1, 1))
 
-s.arrow(rlq$l1,boxes = FALSE)
 
-s.arrow(rlq$c1,boxes = FALSE,clabel = 0.7)
+plot(rlq)
+s.arrow(rlq$l1,boxes = FALSE,xax = 1, yax = 2,addaxes = TRUE, cgrid = 1)
 
-s.label(rlq$lQ, boxes = FALSE,clabel = 0.7)
+s.arrow(rlq$c1,boxes = TRUE,clabel = 0.7)
+
+s.label(rlq$lQ, boxes = TRUE,clabel = 0.7)
 
 
-?s.label()
+randtest(rlq)
+fourthcorner.rlq(rlq,type="Q.axes")
+fourthcorner.rlq(rlq,type="R.axes")
+
+
+
+
+
+
+unique(R_env$SlopeO)
+
+
 #***************************************************
 
 data(aravo)
@@ -653,5 +610,54 @@ s.arrow(rlq.aravo$l1)
 s.arrow(rlq.aravo$c1)
 
 s.label(rlq.aravo$lQ, boxes = FALSE)
+
+
+
+
+#********************************************************************************************************************************
+#* CLUSTER ANALYSIS ON vegetation releve : L_Spe
+#*******************************************************************************************************************************
+#*
+library(factoextra)
+
+df<-L_spe
+#2_Estimating the optimal number of clusters
+
+fviz_nbclust(df,kmeans,method="wss")# k=4
+
+
+#3_Compute k-means with k = 4
+set.seed(123)
+km.res <- kmeans(df, 6, nstart = 25)
+
+
+# Print the results
+print(km.res)
+
+# Cluster number for each of the observations
+km.res$cluster
+head(km.res$cluster, 4)
+
+# Cluster size
+km.res$size
+
+# Cluster means
+(Cluster_mean<-km.res$centers)
+
+
+#4_PLotting and applying a dimensionality reduction algorithm_PCA with fviz_cluster()
+
+?fviz_cluster()
+
+
+fviz_cluster(km.res,df)
+#set ggrepel globally
+options(ggrepel.max.overlaps = Inf)
+
+
+fviz_cluster(km.res,df,ellipse.type="norm",geom="text",labelsize = 9,repel=TRUE,
+             main="Cluster vegetation data - ")
+
+
 
 
